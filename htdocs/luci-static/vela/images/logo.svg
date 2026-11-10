@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Vela">
+  <defs>
+    <linearGradient id="vela-g" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="0.52" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#071426"/>
+  <path d="M15 17h9.4l7.9 25.1L40.2 17H49L37.3 49h-9.9L15 17Z" fill="url(#vela-g)"/>
+  <circle cx="49" cy="15" r="4" fill="#22d3ee"/>
+</svg>

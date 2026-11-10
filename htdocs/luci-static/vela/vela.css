@@ -1,0 +1,670 @@
+/* luci-theme-vela: Vela palette + dashboard
+ * Based on luci-theme-shadcn (Apache-2.0).
+ */
+
+:root {
+	--primary: oklch(0.55 0.17 258);
+	--primary-foreground: oklch(1 0 0);
+	--primary-hover: oklch(0.62 0.17 258);
+	--ring: oklch(0.55 0.17 258 / 0.5);
+	--background: oklch(0.974 0.008 250);
+	--panel-bg: oklch(1 0 0);
+	--sidebar-bg: oklch(0.985 0.006 250);
+	--sidebar-active-bg: oklch(0.55 0.17 258 / 0.1);
+	--sidebar-active-fg: oklch(0.48 0.17 258);
+	--border: oklch(0.9 0.012 250);
+	--panel-border: oklch(0.9 0.012 250);
+	--muted: oklch(0.955 0.008 250);
+	--muted-foreground: oklch(0.52 0.02 255);
+	--radius-base: 0.75rem;
+	--vela-blue: #2563eb;
+	--vela-cyan: #06b6d4;
+	--vela-ink: #0b1220;
+}
+
+[data-darkmode="true"] {
+	--primary: oklch(0.68 0.15 235);
+	--primary-foreground: oklch(0.12 0.02 250);
+	--primary-hover: oklch(0.75 0.14 230);
+	--ring: oklch(0.68 0.15 235 / 0.55);
+	--background: oklch(0.15 0.025 255);
+	--panel-bg: oklch(0.19 0.028 255);
+	--sidebar-bg: oklch(0.135 0.025 255);
+	--sidebar-active-bg: oklch(0.68 0.15 235 / 0.14);
+	--sidebar-active-fg: oklch(0.82 0.12 230);
+	--border: oklch(0.29 0.03 255);
+	--panel-border: oklch(0.29 0.03 255);
+	--muted: oklch(0.23 0.03 255);
+	--muted-foreground: oklch(0.7 0.025 250);
+	--vela-blue: #60a5fa;
+	--vela-cyan: #22d3ee;
+	--vela-ink: #e5edf9;
+}
+
+/* --- shell accents ------------------------------------------------------- */
+body {
+	background: var(--background);
+}
+
+.sidebar-header,
+.sidebar-footer {
+	background: transparent;
+}
+
+.sidebar-brand-text {
+	letter-spacing: -0.02em;
+	font-weight: 700;
+}
+
+.sidebar-logo {
+	filter: drop-shadow(0 4px 10px rgb(37 99 235 / 0.35));
+}
+
+#maincontent {
+	background: transparent;
+}
+
+/* --- login --------------------------------------------------------------- */
+.login-image-inner {
+	background-image:
+		radial-gradient(circle at 20% 15%, rgb(34 211 238 / 0.34), transparent 34%),
+		radial-gradient(circle at 82% 72%, rgb(37 99 235 / 0.42), transparent 40%),
+		linear-gradient(145deg, #07101f 0%, #0c2246 52%, #0b3c55 100%) !important;
+}
+
+.login-image-inner::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background-image:
+		linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
+		linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+	background-size: 44px 44px;
+	mask-image: linear-gradient(180deg, #000 20%, transparent 85%);
+}
+
+.login-brand .login-hostname {
+	letter-spacing: -0.03em;
+}
+
+/* --- status overview dashboard ------------------------------------------ */
+body[data-page="admin-status-overview"] #view.vela-dash-ready > .cbi-section {
+	display: none !important;
+}
+
+body[data-page="admin-status-overview"] #view.vela-dash-ready > .cbi-section.vela-dash-section {
+	display: block !important;
+}
+
+body[data-page="admin-status-overview"] .vela-dash-section {
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+body[data-page="admin-status-overview"] .vela-dash-section > .cbi-title {
+	display: none !important;
+}
+
+.vela-dash {
+	--vd-gap: 16px;
+	--vd-card: var(--panel-bg);
+	--vd-border: var(--border);
+	--vd-muted: var(--muted-foreground);
+	--vd-text: var(--foreground);
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: var(--vd-gap);
+	width: 100%;
+	box-sizing: border-box;
+	color: var(--vd-text);
+	font-size: 13px;
+}
+
+.vela-dash *,
+.vela-dash *::before,
+.vela-dash *::after {
+	box-sizing: border-box;
+}
+
+.vela-span-12 { grid-column: span 12; }
+.vela-span-8  { grid-column: span 8; }
+.vela-span-7  { grid-column: span 7; }
+.vela-span-6  { grid-column: span 6; }
+.vela-span-5  { grid-column: span 5; }
+.vela-span-4  { grid-column: span 4; }
+
+/* hero */
+.vela-dash-hero {
+	position: relative;
+	overflow: hidden;
+	grid-column: 1 / -1;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 18px;
+	padding: 24px 26px;
+	border-radius: 20px;
+	color: #eff8ff;
+	background:
+		radial-gradient(circle at 88% 0%, rgb(34 211 238 / 0.35), transparent 35%),
+		radial-gradient(circle at 4% 100%, rgb(59 130 246 / 0.36), transparent 42%),
+		linear-gradient(120deg, #071226 0%, #0d2b55 52%, #0a5368 100%);
+	box-shadow: 0 22px 60px rgb(2 20 48 / 0.35);
+}
+
+.vela-dash-hero::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
+		linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+	background-size: 36px 36px;
+	mask-image: linear-gradient(120deg, #000 0%, transparent 70%);
+}
+
+.vela-dash-hero > * {
+	position: relative;
+	z-index: 1;
+}
+
+.vela-hero-eyebrow {
+	margin: 0 0 6px;
+	font-size: 10px;
+	line-height: 1.4;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: rgb(186 230 253 / 0.92);
+}
+
+.vela-hero-title {
+	display: flex;
+	color: #f8fbff;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin: 0;
+	font-size: 26px;
+	line-height: 1.15;
+	letter-spacing: -0.035em;
+	font-weight: 750;
+}
+
+.vela-hero-title small {
+	font-size: 12px;
+	font-weight: 500;
+	letter-spacing: 0;
+	color: rgb(207 250 254 / 0.78);
+}
+
+.vela-hero-sub {
+	margin: 7px 0 0;
+	font-size: 12px;
+	color: rgb(219 234 254 / 0.8);
+}
+
+.vela-status-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 10px;
+	border: 1px solid rgb(125 211 252 / 0.28);
+	border-radius: 999px;
+	color: #dff7ff;
+	background: rgb(8 47 73 / 0.55);
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.vela-status-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #34d399;
+	box-shadow: 0 0 0 4px rgb(52 211 153 / 0.16);
+}
+
+.vela-hero-metrics {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 22px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.vela-hero-metrics li {
+	min-width: 64px;
+}
+
+.vela-hero-metrics span {
+	display: block;
+	font-size: 10px;
+	letter-spacing: 0.08em;
+	color: rgb(186 230 253 / 0.72);
+	text-transform: uppercase;
+}
+
+.vela-hero-metrics strong {
+	display: block;
+	margin-top: 3px;
+	font-size: 15px;
+	font-weight: 650;
+	color: #f8fbff;
+	font-variant-numeric: tabular-nums;
+}
+
+/* cards */
+.vela-card {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	padding: 18px;
+	border: 1px solid var(--vd-border);
+	border-radius: 16px;
+	background: var(--surface, var(--panel-bg));
+	box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 10px 30px rgb(15 23 42 / 0.035);
+}
+
+[data-darkmode="true"] .vela-card {
+	box-shadow: 0 1px 2px rgb(0 0 0 / 0.25), 0 14px 34px rgb(0 0 0 / 0.18);
+}
+
+.vela-card > :last-child {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.vela-card-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 10px;
+	margin-bottom: 14px;
+}
+
+.vela-card-title {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 650;
+	letter-spacing: -0.01em;
+}
+
+.vela-card-sub {
+	margin: 3px 0 0;
+	font-size: 11px;
+	color: var(--vd-muted);
+}
+
+.vela-kicker {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 3px 8px;
+	border-radius: 999px;
+	background: var(--muted);
+	color: var(--vd-muted);
+	font-size: 10px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.vela-kicker--ok {
+	background: rgb(16 185 129 / 0.1);
+	color: #059669;
+}
+
+[data-darkmode="true"] .vela-kicker--ok {
+	color: #6ee7b7;
+}
+
+/* key/value rows */
+.vela-kv {
+	display: grid;
+	grid-template-columns: minmax(70px, 0.8fr) minmax(0, 1.5fr);
+	gap: 8px 14px;
+	margin: 0;
+	font-size: 12px;
+}
+
+.vela-kv dt {
+	color: var(--vd-muted);
+}
+
+.vela-kv dd {
+	margin: 0;
+	min-width: 0;
+	overflow-wrap: anywhere;
+	font-weight: 560;
+	font-variant-numeric: tabular-nums;
+}
+
+.vela-kv dd.vela-mono {
+	font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+	font-size: 11px;
+}
+
+.vela-kv-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px 20px;
+}
+
+/* progress */
+.vela-meter {
+	margin-top: 12px;
+}
+
+.vela-meter-head {
+	display: flex;
+	justify-content: space-between;
+	gap: 8px;
+	font-size: 11px;
+	color: var(--vd-muted);
+}
+
+.vela-meter-head strong {
+	color: var(--vd-text);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.vela-meter-track {
+	height: 6px;
+	margin-top: 6px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: var(--muted);
+}
+
+.vela-meter-fill {
+	height: 100%;
+	border-radius: inherit;
+	background: linear-gradient(90deg, var(--vela-blue), var(--vela-cyan));
+	transition: width 0.35s ease;
+}
+
+.vela-meter-fill--warn {
+	background: linear-gradient(90deg, #f59e0b, #f97316);
+}
+
+.vela-meter-fill--crit {
+	background: linear-gradient(90deg, #ef4444, #f97316);
+}
+
+/* traffic */
+.vela-traffic-top {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.vela-rate-pair {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 18px;
+}
+
+.vela-rate {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	font-size: 12px;
+	color: var(--vd-muted);
+}
+
+.vela-rate b {
+	font-size: 20px;
+	line-height: 1;
+	font-weight: 680;
+	color: var(--vd-text);
+	font-variant-numeric: tabular-nums;
+}
+
+.vela-arrow-down { color: #0ea5e9; font-weight: 800; }
+.vela-arrow-up { color: #8b5cf6; font-weight: 800; }
+
+.vela-chart {
+	display: block;
+	width: 100%;
+	height: 126px;
+	margin-top: 12px;
+	overflow: visible;
+}
+
+.vela-chart-grid {
+	stroke: var(--vd-border);
+	stroke-width: 1;
+	stroke-dasharray: 3 4;
+}
+
+.vela-chart-rx {
+	fill: none;
+	stroke: #0ea5e9;
+	stroke-width: 2.4;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+}
+
+.vela-chart-tx {
+	fill: none;
+	stroke: #8b5cf6;
+	stroke-width: 2.2;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+}
+
+.vela-chart-area {
+	fill: url(#vela-rx-fill);
+	stroke: none;
+}
+
+.vela-chart-legend {
+	display: flex;
+	gap: 14px;
+	margin-top: 4px;
+	font-size: 10px;
+	color: var(--vd-muted);
+}
+
+.vela-chart-legend i {
+	display: inline-block;
+	width: 14px;
+	height: 3px;
+	margin-right: 5px;
+	border-radius: 2px;
+	vertical-align: middle;
+}
+
+.vela-total-grid {
+	margin-top: auto;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 8px;
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--vd-border);
+}
+
+.vela-total-grid span {
+	display: block;
+	font-size: 10px;
+	color: var(--vd-muted);
+}
+
+.vela-total-grid strong {
+	font-size: 13px;
+	font-variant-numeric: tabular-nums;
+}
+
+/* connection summary */
+.vela-big-stat {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	margin: 2px 0 4px;
+}
+
+.vela-big-stat strong {
+	font-size: 34px;
+	line-height: 1;
+	letter-spacing: -0.04em;
+	font-weight: 720;
+	font-variant-numeric: tabular-nums;
+}
+
+.vela-big-stat span {
+	font-size: 11px;
+	color: var(--vd-muted);
+}
+
+.vela-stat-pair {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	margin-top: 14px;
+}
+
+.vela-stat-box {
+	padding: 10px 12px;
+	border: 1px solid var(--vd-border);
+	border-radius: 12px;
+	background: var(--muted);
+}
+
+.vela-stat-box span {
+	display: block;
+	font-size: 10px;
+	color: var(--vd-muted);
+}
+
+.vela-stat-box strong {
+	display: block;
+	margin-top: 3px;
+	font-size: 15px;
+	font-variant-numeric: tabular-nums;
+}
+
+/* clients */
+.vela-clients-wrap {
+	overflow-x: auto;
+	margin: 0 -4px;
+}
+
+.vela-clients {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12px;
+}
+
+.vela-clients th {
+	padding: 7px 8px;
+	border-bottom: 1px solid var(--vd-border);
+	color: var(--vd-muted);
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	text-align: left;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.vela-clients td {
+	padding: 9px 8px;
+	border-bottom: 1px solid var(--vd-border);
+	white-space: nowrap;
+}
+
+.vela-clients tr:last-child td {
+	border-bottom: 0;
+}
+
+.vela-client-name {
+	font-weight: 600;
+}
+
+.vela-client-mac {
+	color: var(--vd-muted);
+	font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+	font-size: 10px;
+}
+
+.vela-client-ip {
+	font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+	color: var(--vela-blue);
+}
+
+[data-darkmode="true"] .vela-client-ip {
+	color: #7dd3fc;
+}
+
+.vela-lease-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	color: var(--vd-muted);
+	font-size: 10px;
+}
+
+.vela-lease-badge::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #22c55e;
+}
+
+.vela-empty {
+	padding: 24px 0;
+	color: var(--vd-muted);
+	font-size: 12px;
+	text-align: center;
+}
+
+/* responsive */
+@media (max-width: 1180px) {
+	.vela-span-7,
+	.vela-span-8 { grid-column: span 12; }
+	.vela-span-5,
+	.vela-span-4 { grid-column: span 6; }
+}
+
+@media (max-width: 760px) {
+	.vela-dash {
+		--vd-gap: 12px;
+	}
+	.vela-span-12,
+	.vela-span-8,
+	.vela-span-7,
+	.vela-span-6,
+	.vela-span-5,
+	.vela-span-4 {
+		grid-column: span 12;
+	}
+	.vela-dash-hero {
+		padding: 20px;
+		border-radius: 16px;
+	}
+	.vela-hero-title {
+		font-size: 22px;
+	}
+	.vela-hero-metrics {
+		gap: 16px;
+	}
+	.vela-kv-grid {
+		grid-template-columns: 1fr;
+	}
+	.vela-card {
+		padding: 15px;
+	}
+}

@@ -1,0 +1,10 @@
+luci-theme-vela
+
+This theme is derived from luci-theme-shadcn
+(https://github.com/eamonxg/luci-theme-shadcn), Copyright 2025 eamonxg,
+licensed under the Apache License, Version 2.0.
+
+The Vela-specific dashboard, palette and template changes are
+Copyright 2026 luci-theme-vela contributors, licensed under Apache-2.0.
+
+Bundled icons are from Lucide (ISC License).
