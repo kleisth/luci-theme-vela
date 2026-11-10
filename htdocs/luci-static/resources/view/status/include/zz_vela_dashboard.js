@@ -367,6 +367,7 @@ return baseclass.extend({
 			[ '运行时间', duration(uptime) ],
 			[ '平均负载', loadavg(system.load) ],
 			[ '在线客户机', String(leases.length) ],
+			[ '活动连接', d.conntrack > 0 ? String(d.conntrack) : '-' ],
 			[ '实时下行', rate(d.rxRate) ]
 		].map(function(m) {
 			return E('li', {}, [
