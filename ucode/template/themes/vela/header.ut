@@ -50,12 +50,12 @@
 		<script>
 			(function () {
 				{% if (blank_page): %}
-				try { sessionStorage.removeItem('shadcn.sidebar.cache'); } catch (e) {}
+				try { sessionStorage.removeItem('vela.sidebar.cache'); } catch (e) {}
 				{% endif %}
-				var theme = localStorage.getItem('shadcn.theme') || 'device';
+				var theme = localStorage.getItem('vela.theme') || 'device';
 				var dark = theme === 'dark' || (theme === 'device' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 				document.documentElement.setAttribute('data-darkmode', dark ? 'true' : 'false');
-				var collapsed = localStorage.getItem('shadcn.sidebar') === 'true';
+				var collapsed = localStorage.getItem('vela.sidebar') === 'true';
 				document.documentElement.setAttribute('data-sidebar-collapsed', collapsed ? 'true' : 'false');
 			})();
 		</script>
@@ -110,12 +110,12 @@
 				document.addEventListener('click', function (e) {
 					var t = e.target && e.target.closest ? e.target.closest('a.sidebar-logout') : null;
 					if (!t) return;
-					window.shadcnSuppressSidebarCache = true;
-					try { sessionStorage.removeItem('shadcn.sidebar.cache'); } catch (err) {}
+					window.velaSuppressSidebarCache = true;
+					try { sessionStorage.removeItem('vela.sidebar.cache'); } catch (err) {}
 				}, true);
 
 				try {
-					var raw = sessionStorage.getItem('shadcn.sidebar.cache');
+					var raw = sessionStorage.getItem('vela.sidebar.cache');
 					if (!raw) return;
 					var cache = JSON.parse(raw);
 					var sb = document.getElementById('sidebar');
@@ -167,7 +167,7 @@
 					var nav = sb.querySelector('.sidebar-nav');
 					if (nav) nav.scrollTop = cache.scroll || 0;
 				} catch (e) {
-					try { sessionStorage.removeItem('shadcn.sidebar.cache'); } catch (e2) {}
+					try { sessionStorage.removeItem('vela.sidebar.cache'); } catch (e2) {}
 				}
 			})();
 		</script>
