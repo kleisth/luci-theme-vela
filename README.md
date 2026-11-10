@@ -8,6 +8,8 @@ Vela client UI.
 
 - Dark / light / follow-system appearance, same shell as shadcn.
 - Vela-styled palette: deep navy, blue and cyan accents, soft cards and rounded panels.
+- A Vela-styled shell for every LuCI page: dark navy sidebar, rounded cards, unified
+  pill tabs, tuned tables, forms, buttons, alerts and terminal/log panels.
 - A redesigned status overview built as a responsive dashboard:
   - system, firmware, kernel, load, CPU, memory and storage;
   - WAN protocol, address, gateway, DNS and uptime;

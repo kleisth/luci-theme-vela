@@ -668,3 +668,873 @@ body[data-page="admin-status-overview"] .vela-dash-section > .cbi-title {
 		padding: 15px;
 	}
 }
+
+/* =====================================================================
+ * Vela global page language
+ * All selectors below are presentational; no LuCI behaviour is changed.
+ * ===================================================================== */
+
+/* --- left sidebar ------------------------------------------------------ */
+#sidebar {
+	width: 232px;
+	color: #c7d7ea;
+	background:
+		radial-gradient(circle at 12% 0%, rgb(34 211 238 / 0.12), transparent 34%),
+		radial-gradient(circle at 88% 100%, rgb(37 99 235 / 0.16), transparent 40%),
+		linear-gradient(180deg, #06101e 0%, #091a2e 54%, #0a2038 100%);
+	border-right: 1px solid rgb(125 211 252 / 0.12);
+	box-shadow: 12px 0 40px rgb(2 10 24 / 0.08);
+}
+
+#sidebar::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(rgb(255 255 255 / 0.022) 1px, transparent 1px),
+		linear-gradient(90deg, rgb(255 255 255 / 0.022) 1px, transparent 1px);
+	background-size: 34px 34px;
+	mask-image: linear-gradient(180deg, #000 0%, transparent 78%);
+}
+
+#sidebar > * {
+	position: relative;
+	z-index: 1;
+}
+
+#sidebar .sidebar-header {
+	position: relative;
+	height: 66px;
+	padding: 0 12px 9px;
+	border-bottom: 1px solid rgb(125 211 252 / 0.1);
+}
+
+#sidebar .sidebar-header::after {
+	content: "VELA CONSOLE";
+	position: absolute;
+	left: 45px;
+	bottom: 5px;
+	color: rgb(125 211 252 / 0.5);
+	font-size: 7.5px;
+	font-weight: 600;
+	letter-spacing: 0.18em;
+	white-space: nowrap;
+}
+
+#sidebar .sidebar-brand {
+	position: relative;
+	color: #f4faff;
+	gap: 10px;
+}
+
+#sidebar .sidebar-logo {
+	width: 26px;
+	height: 26px;
+	filter: drop-shadow(0 4px 12px rgb(34 211 238 / 0.35));
+}
+
+#sidebar img.shadcn-icon {
+	filter: brightness(0) invert(1);
+	opacity: 0.62;
+}
+
+#sidebar .sidebar-nav-parent:hover img.shadcn-icon,
+#sidebar .sidebar-accordion-item.active > .sidebar-nav-parent img.shadcn-icon,
+#sidebar .sidebar-accordion-item[data-open="true"] > .sidebar-nav-parent img.shadcn-icon {
+	opacity: 1;
+}
+
+#sidebar .sidebar-brand-text {
+	color: #f4faff;
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+
+#sidebar .sidebar-toggle {
+	color: #8fb2d2;
+	background: rgb(125 211 252 / 0.05);
+	border: 1px solid rgb(125 211 252 / 0.08);
+}
+
+#sidebar .sidebar-toggle:hover {
+	color: #e0f7ff;
+	background: rgb(34 211 238 / 0.12);
+	border-color: rgb(34 211 238 / 0.22);
+}
+
+#sidebar .sidebar-nav {
+	padding: 10px 8px;
+}
+
+#sidebar .sidebar-nav-parent {
+	min-height: 34px;
+	padding: 7px 9px;
+	color: #a9c2dc;
+	border-radius: 9px;
+	font-size: 13px;
+	font-weight: 560;
+}
+
+#sidebar .sidebar-nav-parent:hover {
+	color: #e6f7ff;
+	background: rgb(56 189 248 / 0.08);
+}
+
+#sidebar .sidebar-accordion-item.active > .sidebar-nav-parent,
+#sidebar .sidebar-accordion-item[data-open="true"] > .sidebar-nav-parent {
+	color: #e8f8ff;
+	background: linear-gradient(90deg, rgb(34 211 238 / 0.13), rgb(37 99 235 / 0.09));
+	box-shadow: inset 0 0 0 1px rgb(125 211 252 / 0.08);
+}
+
+#sidebar .sidebar-sub-list {
+	margin-left: 17px;
+	padding-left: 7px;
+	border-left-color: rgb(125 211 252 / 0.13);
+}
+
+#sidebar .sidebar-sub-item {
+	margin-bottom: 1px;
+}
+
+#sidebar .sidebar-sub-link {
+	padding: 6px 8px;
+	color: #b4c9dd;
+	border-radius: 7px;
+	font-size: 12.5px;
+	line-height: 1.35;
+}
+
+#sidebar .sidebar-sub-link:hover {
+	color: #e6f7ff;
+	background: rgb(56 189 248 / 0.08);
+}
+
+#sidebar .sidebar-sub-item.active .sidebar-sub-link {
+	color: #f2fbff;
+	font-weight: 600;
+	background: linear-gradient(90deg, rgb(34 211 238 / 0.2), rgb(37 99 235 / 0.08));
+	box-shadow: inset 2px 0 0 #22d3ee, 0 0 18px rgb(34 211 238 / 0.05);
+}
+
+#sidebar .sidebar-footer {
+	border-top: 1px solid rgb(125 211 252 / 0.1);
+	background: rgb(2 8 20 / 0.18);
+}
+
+#sidebar .sidebar-footer::before {
+	content: "VELA THEME · IMMORTALWRT";
+	display: block;
+	padding: 0 8px 7px;
+	color: rgb(125 211 252 / 0.46);
+	font-size: 7.5px;
+	font-weight: 600;
+	letter-spacing: 0.16em;
+}
+
+#sidebar .sidebar-logout {
+	color: #a9c2dc;
+	border-radius: 8px;
+}
+
+#sidebar .sidebar-logout:hover {
+	color: #e6f7ff;
+	background: rgb(56 189 248 / 0.08);
+}
+
+@media (min-width: 768px) {
+	#sidebar {
+		position: relative;
+		width: 232px;
+	}
+}
+
+@media (max-width: 767px) {
+	#sidebar {
+		width: 248px;
+	}
+}
+
+html[data-sidebar-collapsed="true"] #sidebar {
+	width: 68px;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-header::after,
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-footer::before {
+	display: none;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-header {
+	padding: 0 6px;
+	gap: 4px;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-brand {
+	flex: 0 0 auto;
+	gap: 0;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
+	width: 24px;
+	height: 24px;
+	flex: 0 0 auto;
+}
+
+/* --- page canvas and headings ----------------------------------------- */
+#maincontent {
+	background:
+		radial-gradient(circle at 100% 0%, rgb(37 99 235 / 0.045), transparent 30%),
+		var(--background);
+}
+
+#view h2[name="content"],
+#view > h2 {
+	position: relative;
+	margin: 2px 0 7px;
+	padding-left: 14px;
+	color: var(--foreground);
+	font-size: 24px;
+	font-weight: 750;
+	letter-spacing: -0.035em;
+	line-height: 1.2;
+}
+
+#view h2[name="content"]::before,
+#view > h2::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 3px;
+	bottom: 3px;
+	width: 4px;
+	border-radius: 4px;
+	background: linear-gradient(180deg, #22d3ee, #2563eb);
+	box-shadow: 0 0 14px rgb(34 211 238 / 0.35);
+}
+
+#view .cbi-map-descr {
+	max-width: 900px;
+	margin: 0 0 18px 14px;
+	color: var(--muted-foreground);
+	font-size: 12px;
+	line-height: 1.6;
+}
+
+/* --- section cards ----------------------------------------------------- */
+#view .cbi-section {
+	position: relative;
+	margin: 0 0 16px;
+	padding: 18px 20px;
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	background: var(--surface, var(--panel-bg));
+	box-shadow: 0 1px 2px rgb(15 23 42 / 0.035), 0 10px 28px rgb(15 23 42 / 0.028);
+}
+
+#view .cbi-section .cbi-section {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+#view .cbi-section > h3,
+#view .cbi-title h3 {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 14px;
+	color: var(--foreground);
+	font-size: 15px;
+	font-weight: 680;
+	letter-spacing: -0.015em;
+}
+
+#view .cbi-section > h3::before {
+	content: "";
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background: #22d3ee;
+	box-shadow: 0 0 0 4px rgb(34 211 238 / 0.1);
+}
+
+#view .cbi-section-node {
+	background: transparent;
+}
+
+/* --- tabs -------------------------------------------------------------- */
+#view .cbi-tabmenu {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+	margin: 0 0 14px;
+	padding: 4px;
+	list-style: none;
+	border: 1px solid var(--border);
+	border-radius: 11px;
+	background: var(--muted);
+	width: fit-content;
+	max-width: 100%;
+}
+
+#view .cbi-tabmenu > li {
+	margin: 0;
+}
+
+#view .cbi-tabmenu > li > a {
+	display: block;
+	padding: 6px 12px;
+	border-radius: 8px;
+	color: var(--muted-foreground);
+	font-size: 12px;
+	font-weight: 560;
+	text-decoration: none;
+	transition: color 0.15s, background-color 0.15s, box-shadow 0.15s;
+}
+
+#view .cbi-tabmenu > li.cbi-tab > a,
+#view .cbi-tabmenu > li.cbi-tab-disabled.cbi-tab > a {
+	color: #f8fbff;
+	background: linear-gradient(135deg, #2563eb, #0891b2);
+	box-shadow: 0 4px 12px rgb(37 99 235 / 0.22);
+}
+
+#view .cbi-tabmenu > li:not(.cbi-tab) > a:hover {
+	color: var(--foreground);
+	background: var(--surface, var(--panel-bg));
+}
+
+/* --- forms ------------------------------------------------------------- */
+#view .cbi-value {
+	display: grid;
+	grid-template-columns: minmax(128px, 210px) minmax(0, 1fr);
+	gap: 12px 20px;
+	align-items: start;
+	padding: 11px 4px;
+	border-bottom: 1px dashed var(--border);
+}
+
+#view .cbi-value:last-child {
+	border-bottom: 0;
+}
+
+#view .cbi-value-title {
+	padding-top: 8px;
+	color: var(--muted-foreground);
+	font-size: 11.5px;
+	font-weight: 560;
+	line-height: 1.45;
+}
+
+#view .cbi-value-field {
+	min-width: 0;
+	color: var(--foreground);
+	font-size: 12.5px;
+}
+
+#view .cbi-value-description {
+	margin-top: 5px;
+	color: var(--muted-foreground);
+	font-size: 10.5px;
+	line-height: 1.5;
+}
+
+#view .cbi-input-text,
+#view .cbi-input-textarea,
+#view .cbi-input-select,
+#view .cbi-input-password,
+#view .cbi-input-file,
+#view select,
+#view textarea,
+#view input[type="text"],
+#view input[type="password"],
+#view input[type="number"] {
+	min-height: 34px;
+	padding: 6px 10px;
+	border: 1px solid var(--border);
+	border-radius: 9px;
+	background: var(--surface, var(--panel-bg));
+	color: var(--foreground);
+	font-size: 12.5px;
+	box-shadow: inset 0 1px 1px rgb(15 23 42 / 0.025);
+	transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+
+#view textarea,
+#view .cbi-input-textarea {
+	min-height: 82px;
+	line-height: 1.55;
+}
+
+#view .cbi-input-text:focus,
+#view .cbi-input-textarea:focus,
+#view .cbi-input-select:focus,
+#view .cbi-input-password:focus,
+#view select:focus,
+#view textarea:focus,
+#view input[type="text"]:focus,
+#view input[type="password"]:focus,
+#view input[type="number"]:focus {
+	outline: 0;
+	border-color: #38bdf8;
+	box-shadow: 0 0 0 3px rgb(56 189 248 / 0.14);
+}
+
+#view input[type="checkbox"],
+#view input[type="radio"] {
+	width: 15px;
+	height: 15px;
+	accent-color: #2563eb;
+}
+
+#view .cbi-value-field .control-group {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 7px;
+}
+
+/* --- buttons ----------------------------------------------------------- */
+#view .cbi-button,
+#view .btn {
+	min-height: 32px;
+	padding: 6px 12px;
+	border: 1px solid var(--border);
+	border-radius: 9px;
+	background: var(--surface, var(--panel-bg));
+	color: var(--foreground);
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.3;
+	box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+	transition: transform 0.12s, box-shadow 0.15s, background-color 0.15s, border-color 0.15s;
+}
+
+#view .cbi-button:hover,
+#view .btn:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 5px 14px rgb(15 23 42 / 0.1);
+}
+
+#view .cbi-button:active,
+#view .btn:active {
+	transform: translateY(0);
+	box-shadow: none;
+}
+
+#view .cbi-button-apply,
+#view .cbi-button-save,
+#view .cbi-button-positive,
+#view .cbi-button-action {
+	border-color: transparent;
+	background: linear-gradient(135deg, #2563eb, #0891b2);
+	color: #fff;
+	box-shadow: 0 5px 14px rgb(37 99 235 / 0.2);
+}
+
+#view .cbi-button-apply:hover,
+#view .cbi-button-save:hover,
+#view .cbi-button-positive:hover,
+#view .cbi-button-action:hover {
+	background: linear-gradient(135deg, #1d4ed8, #0e7490);
+	color: #fff;
+}
+
+#view .cbi-button-reset {
+	color: #b45309;
+	background: rgb(245 158 11 / 0.08);
+	border-color: rgb(245 158 11 / 0.2);
+}
+
+#view .cbi-button-negative,
+#view .cbi-button-remove {
+	color: #b91c1c;
+	background: rgb(239 68 68 / 0.08);
+	border-color: rgb(239 68 68 / 0.18);
+}
+
+#view .cbi-button-negative:hover,
+#view .cbi-button-remove:hover {
+	color: #fff;
+	background: #dc2626;
+	border-color: #dc2626;
+}
+
+#view .cbi-button:disabled,
+#view .cbi-button[disabled] {
+	opacity: 0.5;
+	transform: none;
+	box-shadow: none;
+	cursor: not-allowed;
+}
+
+#view .cbi-page-actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 8px;
+	margin: 18px 0 0;
+	padding: 12px 14px;
+	border: 1px solid var(--border);
+	border-radius: 14px;
+	background: var(--surface, var(--panel-bg));
+	box-shadow: 0 8px 24px rgb(15 23 42 / 0.04);
+}
+
+/* --- tables ------------------------------------------------------------ */
+#view table.table {
+	width: 100%;
+	margin: 10px 0;
+	border-collapse: separate;
+	border-spacing: 0;
+	overflow: hidden;
+	border: 1px solid var(--border);
+	border-radius: 13px;
+	background: var(--surface, var(--panel-bg));
+	font-size: 12px;
+}
+
+#view table.table th {
+	padding: 9px 10px;
+	border-bottom: 1px solid var(--border);
+	background: var(--muted);
+	color: var(--muted-foreground);
+	font-size: 10px;
+	font-weight: 650;
+	letter-spacing: 0.055em;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+#view table.table td {
+	padding: 9px 10px;
+	border-bottom: 1px solid var(--border);
+	vertical-align: middle;
+}
+
+#view table.table tr:last-child td {
+	border-bottom: 0;
+}
+
+#view table.table tbody tr {
+	transition: background-color 0.12s;
+}
+
+#view table.table tbody tr:hover {
+	background: rgb(37 99 235 / 0.035);
+}
+
+#view table.table .tr.table-titles th {
+	white-space: nowrap;
+}
+
+/* --- interface boxes (network overview) -------------------------------- */
+#view .ifacebox {
+	overflow: hidden;
+	margin-bottom: 10px;
+	border: 1px solid var(--border);
+	border-radius: 14px;
+	background: var(--surface, var(--panel-bg));
+	box-shadow: 0 2px 8px rgb(15 23 42 / 0.035);
+	transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+#view .ifacebox:hover {
+	border-color: rgb(56 189 248 / 0.35);
+	box-shadow: 0 10px 26px rgb(15 23 42 / 0.08);
+}
+
+#view .ifacebox-head {
+	padding: 8px 12px;
+	border-bottom: 1px solid var(--border);
+	background: linear-gradient(90deg, rgb(37 99 235 / 0.08), rgb(34 211 238 / 0.04));
+	color: var(--foreground);
+	font-size: 12px;
+	font-weight: 650;
+}
+
+#view .ifacebox-head.active {
+	background: linear-gradient(90deg, rgb(16 185 129 / 0.14), rgb(34 211 238 / 0.05));
+}
+
+#view .ifacebox-body {
+	padding: 10px 12px;
+	font-size: 12px;
+}
+
+#view .ifacebadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 3px 7px;
+	border: 1px solid var(--border);
+	border-radius: 999px;
+	background: var(--muted);
+	color: var(--muted-foreground);
+	font-size: 10px;
+}
+
+/* --- alerts and progress ------------------------------------------------ */
+#view .alert-message {
+	margin: 12px 0;
+	padding: 10px 13px;
+	border: 1px solid rgb(56 189 248 / 0.24);
+	border-radius: 11px;
+	background: rgb(56 189 248 / 0.08);
+	color: var(--foreground);
+	font-size: 12px;
+}
+
+#view .alert-message.warning,
+#view .alert-message.notice {
+	border-color: rgb(245 158 11 / 0.25);
+	background: rgb(245 158 11 / 0.08);
+}
+
+#view .cbi-progressbar {
+	height: 7px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: var(--muted);
+}
+
+#view .cbi-progressbar > div {
+	height: 100%;
+	border-radius: inherit;
+	background: linear-gradient(90deg, #2563eb, #06b6d4);
+}
+
+/* --- logs and code terminals ------------------------------------------- */
+#view pre,
+#view .log-container,
+#view #log {
+	border: 1px solid rgb(34 211 238 / 0.16);
+	border-radius: 13px;
+	background: #07111f;
+	color: #c9f5ff;
+	font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+	font-size: 11px;
+	line-height: 1.55;
+	box-shadow: 0 12px 28px rgb(2 12 27 / 0.12);
+}
+
+#view pre {
+	padding: 12px 14px;
+	overflow: auto;
+}
+
+/* --- detail / description blocks --------------------------------------- */
+#view .cbi-map > .cbi-section,
+#view .cbi-section-node > .cbi-section {
+	background: var(--surface, var(--panel-bg));
+}
+
+#view .cbi-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+#view .cbi-title .label {
+	padding: 3px 8px;
+	border-radius: 999px;
+	background: var(--muted);
+	font-size: 10px;
+}
+
+/* --- responsive -------------------------------------------------------- */
+@media (max-width: 760px) {
+	#view .cbi-value {
+		grid-template-columns: 1fr;
+		gap: 5px;
+		padding: 10px 2px;
+	}
+
+	#view .cbi-value-title {
+		padding-top: 0;
+	}
+
+	#view .cbi-section {
+		padding: 15px 13px;
+		border-radius: 14px;
+	}
+
+	#view h2[name="content"],
+	#view > h2 {
+		font-size: 21px;
+	}
+
+	#view .cbi-tabmenu {
+		width: 100%;
+	}
+
+	#view .cbi-tabmenu > li {
+		flex: 1 1 auto;
+	}
+
+	#view .cbi-tabmenu > li > a {
+		text-align: center;
+	}
+}
+
+
+/* --- unified top tabs -------------------------------------------------- */
+#view .tabs {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 5px;
+	width: fit-content;
+	max-width: 100%;
+	padding: 4px;
+	border: 1px solid var(--border);
+	border-bottom: 1px solid var(--border);
+	border-radius: 11px;
+	background: var(--muted);
+	overflow-x: auto;
+}
+
+#view .tabs > li {
+	flex: 0 0 auto;
+	margin: 0;
+	border: 0;
+}
+
+#view .tabs > li > a {
+	display: block;
+	padding: 6px 12px;
+	border-radius: 8px;
+	color: var(--muted-foreground);
+	font-size: 12px;
+	font-weight: 560;
+	white-space: nowrap;
+}
+
+#view .tabs > li > a:hover {
+	color: var(--foreground);
+	background: var(--surface, var(--panel-bg));
+}
+
+#view .tabs > li.active {
+	border: 0;
+	background: linear-gradient(135deg, #2563eb, #0891b2);
+	box-shadow: 0 4px 12px rgb(37 99 235 / 0.22);
+}
+
+#view .tabs > li.active > a {
+	color: #fff;
+	font-weight: 620;
+}
+
+@media (max-width: 760px) {
+	#view .cbi-tabmenu {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		justify-content: flex-start;
+	}
+
+	#view .cbi-tabmenu > li {
+		flex: 0 0 auto;
+	}
+
+	#view .tabs {
+		width: 100%;
+	}
+
+	#view .tabs > li {
+		flex: 1 0 auto;
+	}
+
+	#view .tabs > li > a {
+		text-align: center;
+	}
+}
+
+
+/* --- page tab strip (#tabmenu) ----------------------------------------- */
+#tabmenu .tabs {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 5px;
+	width: fit-content;
+	max-width: 100%;
+	padding: 4px;
+	border: 1px solid var(--border);
+	border-bottom: 1px solid var(--border);
+	border-radius: 11px;
+	background: var(--muted);
+	overflow-x: auto;
+}
+
+#tabmenu .tabs > li {
+	flex: 0 0 auto;
+	margin: 0;
+	border: 0;
+}
+
+#tabmenu .tabs > li > a {
+	display: block;
+	padding: 6px 12px;
+	border-radius: 8px;
+	color: var(--muted-foreground);
+	font-size: 12px;
+	font-weight: 560;
+	white-space: nowrap;
+}
+
+#tabmenu .tabs > li > a:hover {
+	color: var(--foreground);
+	background: var(--surface, var(--panel-bg));
+}
+
+#tabmenu .tabs > li.active {
+	border: 0;
+	background: linear-gradient(135deg, #2563eb, #0891b2);
+	box-shadow: 0 4px 12px rgb(37 99 235 / 0.22);
+}
+
+#tabmenu .tabs > li.active > a {
+	color: #fff;
+	font-weight: 620;
+}
+
+#view .cbi-tabmenu,
+#view .tabs,
+#tabmenu .tabs {
+	scrollbar-width: none;
+}
+
+#view .cbi-tabmenu::-webkit-scrollbar,
+#view .tabs::-webkit-scrollbar,
+#tabmenu .tabs::-webkit-scrollbar {
+	display: none;
+}
+
+@media (max-width: 760px) {
+	#tabmenu {
+		overflow: hidden;
+	}
+
+	#tabmenu .tabs {
+		width: 100%;
+	}
+
+	#tabmenu .tabs > li {
+		flex: 1 0 auto;
+	}
+
+	#tabmenu .tabs > li > a {
+		text-align: center;
+	}
+}
+
+
+/* Soften LuCI zone colors so the interface cards fit the Vela palette. */
+#view .ifacebox .ifacebox-head[style*="--zone-color-rgb"] {
+	background: linear-gradient(90deg, rgba(var(--zone-color-rgb), 0.32), rgba(var(--zone-color-rgb), 0.07)) !important;
+	color: var(--foreground) !important;
+}
