@@ -66,6 +66,11 @@ function loadavg(load) {
 	}).join('  ');
 }
 
+function isVelaTheme() {
+	var media = (L.env && L.env.media) || document.documentElement.getAttribute('data-shadcn-media') || '';
+	return String(media).replace(/\/$/, '').endsWith('/vela');
+}
+
 function ipSort(a, b) {
 	function n(ip) {
 		var p = String(ip || '').split('.');
@@ -74,9 +79,9 @@ function ipSort(a, b) {
 	return n(a.ipaddr) - n(b.ipaddr);
 }
 
-function meter(label, used, total, text) {
+function meter(label, used, total, text, plain) {
 	var pc = percent(used, total);
-	var cls = pc >= 90 ? ' vela-meter-fill--crit' : pc >= 75 ? ' vela-meter-fill--warn' : '';
+	var cls = plain ? '' : (pc >= 90 ? ' vela-meter-fill--crit' : pc >= 75 ? ' vela-meter-fill--warn' : '');
 	return E('div', { 'class': 'vela-meter' }, [
 		E('div', { 'class': 'vela-meter-head' }, [
 			E('span', {}, label),
@@ -210,6 +215,9 @@ return baseclass.extend({
 	_history: [],
 
 	load: function() {
+		if (!isVelaTheme())
+			return Promise.resolve(null);
+
 		return Promise.all([
 			L.resolveDefault(callSystemBoard(), {}),
 			L.resolveDefault(callSystemInfo(), {}),
@@ -288,6 +296,9 @@ return baseclass.extend({
 	},
 
 	render: function(d) {
+		if (!d)
+			return null;
+
 		var self = this,
 		    board = d.board || {},
 		    system = d.system || {},
@@ -406,9 +417,9 @@ return baseclass.extend({
 					]),
 					E('div', { 'class': 'vela-kv-grid' }, [
 						meter('下行占比', d.wanRx, d.wanRx + d.wanTx,
-							percent(d.wanRx, d.wanRx + d.wanTx).toFixed(1) + ' %'),
+							percent(d.wanRx, d.wanRx + d.wanTx).toFixed(1) + ' %', true),
 						meter('上行占比', d.wanTx, d.wanRx + d.wanTx,
-							percent(d.wanTx, d.wanRx + d.wanTx).toFixed(1) + ' %')
+							percent(d.wanTx, d.wanRx + d.wanTx).toFixed(1) + ' %', true)
 					])
 				]) : E('div', { 'class': 'vela-empty' }, '未检测到默认 WAN 接口'),
 				wan ? '在线' : '未连接'),
