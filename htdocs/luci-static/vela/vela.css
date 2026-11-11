@@ -2371,3 +2371,39 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 .vela-clients th.vela-col-lease {
 	text-align: left;
 }
+
+
+/* Final client-table layout: the five metric columns are equal width and
+   share the same left alignment. No vertical rule between them. */
+.vela-col-host {
+	width: 25%;
+}
+
+.vela-col-ip,
+.vela-col-rate,
+.vela-col-conn,
+.vela-col-lease {
+	width: 15%;
+}
+
+.vela-clients th.vela-col-ip,
+.vela-clients th.vela-col-rate,
+.vela-clients th.vela-col-conn,
+.vela-clients th.vela-col-lease,
+.vela-clients td.vela-col-ip,
+.vela-clients td.vela-col-rate,
+.vela-clients td.vela-col-conn,
+.vela-clients td.vela-col-lease {
+	text-align: left;
+	padding-left: 18px;
+	padding-right: 10px;
+	border-left: 0;
+}
+
+.vela-client-rate {
+	text-align: left;
+}
+
+.vela-conn {
+	align-items: flex-start;
+}
