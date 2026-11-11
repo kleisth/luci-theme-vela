@@ -176,48 +176,15 @@
 
 		<div id="main-wrapper">
 			<div class="content-card">
-				<header class="card-header">
-					<div class="card-header-left">
-						<button
-							id="sidebar-hamburger"
-							class="topbar-hamburger"
-							type="button"
-							aria-label="{{ _('Navigation') }}"
-						>
-							<img src="{{ media }}/icons/menu.svg" width="18" height="18" alt="">
-						</button>
-						<nav class="topbar-breadcrumb" id="topbar-breadcrumb" aria-label="{{ _('Navigation') }}"></nav>
-					</div>
-					<div class="card-header-right">
-						{#- Command palette (⌘K): trigger only — the panel is built lazily
-						    by menu-vela.js. The button wears the same msgid as the panel's
-						    input placeholder, so the trigger reads as a preview of what it
-						    opens. Not 'Search': that msgid is defined in exactly one LuCI
-						    pot (luci-app-adblock) and would read English wherever adblock is
-						    absent, whereas 'Type to filter…' comes from
-						    luci-app-package-manager, a dependency of the default luci
-						    collection. aria-label repeats the visible text (it hides below
-						    the md breakpoint, and a mismatch would break Label in Name). -#}
-						<button
-							id="cmdk-trigger"
-							class="cmdk-trigger"
-							type="button"
-							aria-label="{{ _('Type to filter…') }}"
-						>
-							<span class="cmdk-trigger-label">{{ _('Type to filter…') }}</span>
-							<kbd class="cmdk-trigger-key">{{ match(http.getenv('HTTP_USER_AGENT') ?? '', /Mac|iP(ad|hone|od)/) ? '⌘K' : 'Ctrl+K' }}</kbd>
-						</button>
-						<div id="indicators" class="topbar-indicators"></div>
-						<button
-							id="theme-toggle-btn"
-							class="topbar-icon-btn"
-							type="button"
-							aria-label="{{ _('Design') }}"
-						>
-							<img src="{{ media }}/icons/sun.svg" width="16" height="16" alt="">
-						</button>
-					</div>
-				</header>
+				<button
+					id="sidebar-hamburger"
+					class="vela-mobile-menu"
+					type="button"
+					aria-label="{{ _('Navigation') }}"
+				>
+					<img src="{{ media }}/icons/menu.svg" width="19" height="19" alt="">
+				</button>
+				<div id="indicators" class="vela-indicators" aria-hidden="true"></div>
 
 				<div id="maincontent" tabindex="-1">
 				{% if (getuid() == 0 && root_pw_unset && ctx && ctx.authsession): %}

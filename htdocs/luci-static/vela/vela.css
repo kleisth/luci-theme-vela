@@ -1553,3 +1553,223 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 #view .cbi-value:has(> .cbi-section) > .cbi-section {
 	width: 100%;
 }
+
+
+/* =====================================================================
+ * Header-free shell, sidebar theme toggle and floating notifications
+ * ===================================================================== */
+
+/* The shadcn top header is intentionally removed. */
+.card-header {
+	display: none !important;
+}
+
+.vela-indicators {
+	display: none !important;
+}
+
+/* Mobile navigation remains available as a floating control. */
+.vela-mobile-menu {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	.vela-mobile-menu {
+		position: fixed;
+		top: 12px;
+		left: 12px;
+		z-index: 35;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 34px;
+		height: 34px;
+		padding: 0;
+		border: 1px solid rgb(125 211 252 / 0.2);
+		border-radius: 10px;
+		background: linear-gradient(145deg, #071426, #0c2440);
+		color: #dff7ff;
+		box-shadow: 0 6px 18px rgb(2 12 27 / 0.28);
+	}
+
+	.vela-mobile-menu img {
+		width: 18px;
+		height: 18px;
+		filter: brightness(0) invert(1);
+		opacity: 0.9;
+	}
+
+	#maincontent {
+		padding-top: 58px !important;
+	}
+}
+
+/* Theme switch below the sidebar collapse control. */
+#sidebar .sidebar-theme-toggle {
+	position: absolute;
+	top: 37px;
+	right: 7px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: 1px solid rgb(125 211 252 / 0.12);
+	border-radius: 7px;
+	background: rgb(125 211 252 / 0.05);
+	color: #a9c2dc;
+	cursor: pointer;
+	transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+}
+
+#sidebar .sidebar-theme-toggle:hover {
+	color: #e0f7ff;
+	background: rgb(34 211 238 / 0.12);
+	border-color: rgb(34 211 238 / 0.24);
+}
+
+#sidebar .sidebar-theme-toggle img {
+	width: 14px;
+	height: 14px;
+	filter: brightness(0) invert(1);
+	opacity: 0.76;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-theme-toggle {
+	top: 38px;
+	right: 6px;
+}
+
+/* Selected page tab: rounded surface, not a square block. */
+#view .tabs > li.active,
+#tabmenu .tabs > li.active,
+#view .cbi-tabmenu > li.cbi-tab {
+	border-radius: 8px;
+}
+
+/* Floating, stacked notifications at the top right. */
+#vela-toasts {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	z-index: 90;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: min(380px, calc(100vw - 32px));
+	pointer-events: none;
+}
+
+.vela-toast {
+	pointer-events: auto;
+	display: flex !important;
+	align-items: flex-start !important;
+	gap: 10px;
+	width: 100%;
+	margin: 0 !important;
+	padding: 12px 14px !important;
+	border: 1px solid var(--border) !important;
+	border-left: 3px solid #38bdf8 !important;
+	border-radius: 14px !important;
+	background: var(--panel-bg) !important;
+	color: var(--foreground) !important;
+	box-shadow: 0 16px 40px rgb(2 12 27 / 0.18), 0 2px 6px rgb(2 12 27 / 0.08) !important;
+	font-size: 12px;
+	line-height: 1.5;
+	animation: vela-toast-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.vela-toast > div:first-child {
+	flex: 1 1 auto !important;
+	min-width: 0;
+}
+
+.vela-toast > div:last-child {
+	flex: 0 0 auto !important;
+}
+
+.vela-toast h4 {
+	margin: 0 0 3px;
+	font-size: 12.5px;
+	font-weight: 680;
+}
+
+.vela-toast p {
+	margin: 0;
+	color: var(--muted-foreground);
+}
+
+.vela-toast.success {
+	border-left-color: #10b981 !important;
+}
+
+.vela-toast.danger {
+	border-left-color: #ef4444 !important;
+}
+
+.vela-toast.warning {
+	border-left-color: #f59e0b !important;
+}
+
+.vela-toast .btn {
+	min-height: 26px;
+	padding: 3px 8px;
+	border: 1px solid var(--border);
+	border-radius: 7px;
+	background: var(--muted);
+	color: var(--foreground);
+	font-size: 10px;
+	font-weight: 600;
+}
+
+.vela-toast .btn:hover {
+	background: var(--surface, var(--panel-bg));
+}
+
+@keyframes vela-toast-in {
+	from {
+		opacity: 0;
+		transform: translateY(-8px) scale(0.98);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@media (max-width: 760px) {
+	#vela-toasts {
+		top: 10px;
+		right: 10px;
+		width: calc(100vw - 20px);
+	}
+}
+
+
+/* Collapsed state is a desktop-only concept; the mobile drawer always
+   keeps its full width even when the desktop sidebar was collapsed. */
+@media (max-width: 767px) {
+	html[data-sidebar-collapsed="true"] #sidebar {
+		width: 248px;
+	}
+
+	html[data-sidebar-collapsed="true"] #sidebar .sidebar-header {
+		padding: 0 12px 9px;
+		gap: 0;
+	}
+
+	html[data-sidebar-collapsed="true"] #sidebar .sidebar-brand {
+		flex: 1 1 auto;
+		gap: 10px;
+	}
+
+	html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
+		width: 28px;
+		height: 28px;
+	}
+
+	html[data-sidebar-collapsed="true"] #sidebar .sidebar-header::after {
+		display: block;
+	}
+}
