@@ -1976,3 +1976,184 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 .vela-hero-coremark strong {
 	line-height: 1;
 }
+
+
+/* =====================================================================
+ * Network → Interfaces: one Vela card per interface
+ * ===================================================================== */
+
+#cbi-network-interface {
+	padding: 0;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+#cbi-network-interface > h3 {
+	margin: 2px 0 12px;
+}
+
+#cbi-network-interface .cbi-section-table {
+	display: block;
+	width: 100%;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+#cbi-network-interface .cbi-section-table tbody,
+#cbi-network-interface .cbi-section-table thead {
+	display: block;
+}
+
+#cbi-network-interface .cbi-section-table tr.cbi-section-table-row {
+	display: grid;
+	grid-template-columns: 190px minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 14px 18px;
+	margin: 0 0 10px;
+	padding: 13px;
+	border: 1px solid var(--border);
+	border-radius: 15px;
+	background: var(--surface, var(--panel-bg));
+	box-shadow: 0 2px 8px rgb(15 23 42 / 0.035);
+	transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+#cbi-network-interface .cbi-section-table tr.cbi-section-table-row:hover {
+	border-color: rgb(56 189 248 / 0.34);
+	box-shadow: 0 10px 26px rgb(15 23 42 / 0.075);
+	transform: translateY(-1px);
+}
+
+#cbi-network-interface .cbi-section-table tr.cbi-section-table-row > td {
+	display: block;
+	width: auto !important;
+	min-width: 0 !important;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	vertical-align: middle;
+}
+
+#cbi-network-interface .ifacebox {
+	width: 100%;
+	max-width: 182px;
+	margin: 0;
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	box-shadow: none;
+	background: var(--surface, var(--panel-bg));
+}
+
+#cbi-network-interface .ifacebox-head {
+	padding: 7px 10px;
+	font-size: 11.5px;
+}
+
+#cbi-network-interface .ifacebox-body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 3px;
+	padding: 9px 8px;
+	min-height: 58px;
+	font-size: 10.5px;
+}
+
+#cbi-network-interface .ifacebox-body > img,
+#cbi-network-interface .ifacebox-body .cbi-tooltip-container > img {
+	width: 22px;
+	height: 22px;
+	opacity: 0.72;
+}
+
+#cbi-network-interface .ifacebox-body small {
+	color: var(--muted-foreground);
+	font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+	font-size: 9.5px;
+}
+
+#cbi-network-interface [id$="-ifc-description"] {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 5px 14px;
+	color: var(--foreground);
+	font-size: 11.5px;
+	line-height: 1.5;
+}
+
+#cbi-network-interface [id$="-ifc-description"] br {
+	display: none;
+}
+
+#cbi-network-interface [id$="-ifc-description"] > span.nowrap {
+	display: flex;
+	align-items: baseline;
+	gap: 5px;
+	min-width: 0;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+#cbi-network-interface [id$="-ifc-description"] > span.nowrap > strong {
+	flex: 0 0 auto;
+	color: var(--muted-foreground);
+	font-size: 10.5px;
+	font-weight: 560;
+}
+
+#cbi-network-interface .cbi-section-actions > div {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 6px;
+}
+
+#cbi-network-interface .cbi-section-actions button {
+	min-height: 28px;
+	padding: 4px 9px;
+	font-size: 11px;
+	border-radius: 8px;
+}
+
+@media (max-width: 1050px) {
+	#cbi-network-interface .cbi-section-table tr.cbi-section-table-row {
+		grid-template-columns: 170px minmax(0, 1fr);
+	}
+
+	#cbi-network-interface .cbi-section-actions {
+		grid-column: 1 / -1;
+	}
+}
+
+@media (max-width: 650px) {
+	#cbi-network-interface .cbi-section-table tr.cbi-section-table-row {
+		grid-template-columns: 1fr;
+		align-items: start;
+		gap: 10px;
+		padding: 12px;
+	}
+
+	#cbi-network-interface .ifacebox {
+		max-width: none;
+	}
+
+	#cbi-network-interface .ifacebox-body {
+		min-height: 48px;
+	}
+
+	#cbi-network-interface [id$="-ifc-description"] {
+		grid-template-columns: 1fr;
+	}
+
+	#cbi-network-interface .cbi-section-actions {
+		grid-column: auto;
+	}
+
+	#cbi-network-interface .cbi-section-actions > div {
+		justify-content: flex-start;
+	}
+}
