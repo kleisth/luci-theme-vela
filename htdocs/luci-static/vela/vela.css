@@ -1954,3 +1954,25 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 		font-size: 25px;
 	}
 }
+
+
+/* CoreMark: big score centered in the badge, label bottom-aligned to it. */
+.vela-hero-coremark {
+	display: grid;
+	grid-template-columns: auto auto;
+	align-items: end;
+	align-content: center;
+	justify-content: center;
+	column-gap: 4px;
+	min-height: 60px;
+	padding: 8px 18px;
+}
+
+.vela-hero-coremark span {
+	line-height: 1;
+	padding-bottom: 1px;
+}
+
+.vela-hero-coremark strong {
+	line-height: 1;
+}
