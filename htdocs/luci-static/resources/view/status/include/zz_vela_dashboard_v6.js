@@ -448,23 +448,25 @@ return baseclass.extend({
 			}			var stat = bandixStat(lease);
 			var conn = bandixConn(lease);
 			var row = [
-				E('td', { 'class': 'vela-client-name' }, lease.hostname && lease.hostname !== '*' ? lease.hostname : '未知设备'),
-				E('td', {}, E('span', { 'class': 'vela-client-ip' }, lease.ipaddr || '-'))
+				E('td', { 'class': 'vela-client-name vela-col-host' }, [
+					E('div', { 'class': 'vela-client-host' }, lease.hostname && lease.hostname !== '*' ? lease.hostname : '未知设备'),
+					E('div', { 'class': 'vela-client-mac' }, lease.macaddr || '-')
+				]),
+				E('td', { 'class': 'vela-col-ip' }, E('span', { 'class': 'vela-client-ip' }, lease.ipaddr || '-'))
 			];
 			if (showRates) {
-				row.push(E('td', {}, E('span', { 'class': 'vela-client-rate' }, stat ? ('↓ ' + rate(number(stat.w_rx_r))) : '—')));
-				row.push(E('td', {}, E('span', { 'class': 'vela-client-rate' }, stat ? ('↑ ' + rate(number(stat.w_tx_r))) : '—')));
+				row.push(E('td', { 'class': 'vela-col-rate' }, E('span', { 'class': 'vela-client-rate' }, stat ? ('↓ ' + rate(number(stat.w_rx_r))) : '—')));
+				row.push(E('td', { 'class': 'vela-col-rate' }, E('span', { 'class': 'vela-client-rate' }, stat ? ('↑ ' + rate(number(stat.w_tx_r))) : '—')));
 			}
-			row.push(E('td', {}, E('span', { 'class': 'vela-client-mac' }, lease.macaddr || '-')));
 			if (showConns) {
-				row.push(E('td', {}, conn
+				row.push(E('td', { 'class': 'vela-col-conn' }, conn
 					? E('div', { 'class': 'vela-conn' }, [
 						E('strong', {}, String(number(conn.total))),
 						E('span', { 'class': 'vela-conn-detail' }, 'TCP ' + number(conn.tcp) + ' / UDP ' + number(conn.udp))
 					])
 					: '—'));
 			}
-			row.push(E('td', {}, E('span', { 'class': 'vela-lease-badge' + (lease._bandixOnly ? ' vela-lease-badge--none' : '') }, remaining)));
+			row.push(E('td', { 'class': 'vela-col-lease' }, E('span', { 'class': 'vela-lease-badge' + (lease._bandixOnly ? ' vela-lease-badge--none' : '') }, remaining)));
 			return E('tr', {}, row);
 		});
 
@@ -632,14 +634,13 @@ return baseclass.extend({
 					recentLeases.length ? E('div', { 'class': 'vela-clients-wrap' }, [
 						E('table', { 'class': 'vela-clients' }, [
 							E('thead', {}, E('tr', {}, (function() {
-								var headers = [ E('th', {}, '主机名'), E('th', {}, 'IPv4') ];
+								var headers = [ E('th', { 'class': 'vela-col-host' }, '主机名'), E('th', { 'class': 'vela-col-ip' }, 'IPv4') ];
 								if (showRates) {
-									headers.push(E('th', {}, 'WAN 下行'));
-									headers.push(E('th', {}, 'WAN 上行'));
+									headers.push(E('th', { 'class': 'vela-col-rate' }, 'WAN 下行'));
+									headers.push(E('th', { 'class': 'vela-col-rate' }, 'WAN 上行'));
 								}
-								headers.push(E('th', {}, 'MAC'));
-								if (showConns) headers.push(E('th', {}, '连接数'));
-								headers.push(E('th', {}, '租约剩余'));
+								if (showConns) headers.push(E('th', { 'class': 'vela-col-conn' }, '连接数'));
+								headers.push(E('th', { 'class': 'vela-col-lease' }, '租约剩余'));
 								return headers;
 							})())),
 							E('tbody', {}, leaseRows)

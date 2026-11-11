@@ -63,10 +63,10 @@
 		<meta name="color-scheme" content="light dark">
 		{% if (blank_page): %}
 		<link rel="stylesheet" href="{{ media }}/login.css">
-		<link rel="stylesheet" href="{{ media }}/vela.css?v=1.2.1">
+		<link rel="stylesheet" href="{{ media }}/vela.css?v=1.2.2">
 		{% else %}
 		<link rel="stylesheet" href="{{ media }}/main.css" data-luci-shell>
-		<link rel="stylesheet" href="{{ media }}/vela.css?v=1.2.1" data-vela-theme>
+		<link rel="stylesheet" href="{{ media }}/vela.css?v=1.2.2" data-vela-theme>
 		{% for (let patch in patch_files): %}
 		<link rel="stylesheet" href="{{ media }}/patches/{{ patch }}.css" data-luci-patch="{{ patch }}">
 		{% endfor %}

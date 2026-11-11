@@ -2282,3 +2282,70 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 .vela-lease-badge--none::before {
 	background: #94a3b8;
 }
+
+
+/* Client table: fixed metric columns and hostname/MAC stacked together. */
+.vela-clients {
+	table-layout: fixed;
+	min-width: 860px;
+}
+
+.vela-col-host {
+	width: auto;
+	min-width: 220px;
+}
+
+.vela-col-ip {
+	width: 132px;
+}
+
+.vela-col-rate {
+	width: 112px;
+}
+
+.vela-col-conn {
+	width: 104px;
+}
+
+.vela-col-lease {
+	width: 120px;
+}
+
+.vela-client-name {
+	white-space: normal;
+}
+
+.vela-client-host {
+	font-size: 12px;
+	font-weight: 620;
+	line-height: 1.35;
+	overflow-wrap: anywhere;
+}
+
+.vela-client-name .vela-client-mac {
+	display: block;
+	margin-top: 2px;
+	font-size: 9.5px;
+	line-height: 1.2;
+	color: var(--muted-foreground);
+}
+
+.vela-client-rate {
+	display: inline-block;
+	width: 100%;
+	text-align: right;
+}
+
+.vela-clients th.vela-col-rate,
+.vela-clients td.vela-col-rate {
+	text-align: right;
+}
+
+.vela-clients th.vela-col-conn,
+.vela-clients td.vela-col-conn {
+	text-align: right;
+}
+
+.vela-conn {
+	align-items: flex-end;
+}
