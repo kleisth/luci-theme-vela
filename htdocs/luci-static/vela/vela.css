@@ -2284,31 +2284,31 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 }
 
 
-/* Client table: fixed metric columns and hostname/MAC stacked together. */
+/* Client table: proportional columns, with stable metric widths. */
 .vela-clients {
 	table-layout: fixed;
-	min-width: 860px;
+	width: 100%;
+	min-width: 900px;
 }
 
 .vela-col-host {
-	width: auto;
-	min-width: 220px;
+	width: 30%;
 }
 
 .vela-col-ip {
-	width: 132px;
+	width: 15%;
 }
 
 .vela-col-rate {
-	width: 112px;
+	width: 16%;
 }
 
 .vela-col-conn {
-	width: 104px;
+	width: 12%;
 }
 
 .vela-col-lease {
-	width: 120px;
+	width: 11%;
 }
 
 .vela-client-name {
