@@ -19,6 +19,11 @@ var callCPUUsage = rpc.declare({
 	method: 'getCPUUsage'
 });
 
+var callCPUBench = rpc.declare({
+	object: 'luci',
+	method: 'getCPUBench'
+});
+
 var callDHCPLeases = rpc.declare({
 	object: 'luci-rpc',
 	method: 'getDHCPLeases',
@@ -57,6 +62,11 @@ function percent(used, total) {
 	var t = number(total), u = number(used);
 	if (t <= 0) return 0;
 	return Math.max(0, Math.min(100, u * 100 / t));
+}
+
+function coremark(bench) {
+	var match = String((bench && bench.cpubench) || '').match(/[0-9]+(?:\.[0-9]+)?/);
+	return match ? Math.round(Number(match[0])) : null;
 }
 
 function loadavg(load) {
@@ -213,6 +223,13 @@ return baseclass.extend({
 
 	_last: null,
 	_history: [],
+	_benchPromise: null,
+
+	getBench: function() {
+		if (!this._benchPromise)
+			this._benchPromise = L.resolveDefault(callCPUBench(), {});
+		return this._benchPromise;
+	},
 
 	load: function() {
 		if (!isVelaTheme())
@@ -225,7 +242,8 @@ return baseclass.extend({
 			L.resolveDefault(callDHCPLeases(), {}),
 			L.resolveDefault(network.getWANNetworks(), []),
 			L.resolveDefault(fs.trimmed('/proc/sys/net/netfilter/nf_conntrack_count'), ''),
-			L.resolveDefault(fs.trimmed('/proc/sys/net/netfilter/nf_conntrack_max'), '')
+			L.resolveDefault(fs.trimmed('/proc/sys/net/netfilter/nf_conntrack_max'), ''),
+			this.getBench()
 		]).then(L.bind(function(data) {
 			var board = L.isObject(data[0]) ? data[0] : {},
 			    system = L.isObject(data[1]) ? data[1] : {},
@@ -269,7 +287,8 @@ return baseclass.extend({
 				txRate: txRate,
 				history: this._history.slice(),
 				conntrack: number(String(data[5] || '').trim()),
-				conntrackMax: number(String(data[6] || '').trim())
+				conntrackMax: number(String(data[6] || '').trim()),
+				coremark: coremark(data[7])
 			};
 		}, this));
 	},
@@ -394,6 +413,10 @@ return baseclass.extend({
 						])
 					]),
 					E('p', { 'class': 'vela-hero-sub' }, model + (firmware ? ' · ' + firmware : ''))
+				]),
+				E('div', { 'class': 'vela-hero-coremark' }, [
+					E('span', {}, 'CoreMark：'),
+					E('strong', {}, d.coremark != null ? d.coremark.toLocaleString('en-US') : '—')
 				]),
 				E('ul', { 'class': 'vela-hero-metrics' }, heroMetrics)
 			]),

@@ -1773,3 +1773,90 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-theme-toggle {
 		display: block;
 	}
 }
+
+
+/* Sidebar header: the collapse and appearance controls form one aligned
+   vertical rail on the right. */
+#sidebar .sidebar-header {
+	height: 76px;
+	padding: 10px 12px 8px;
+	align-items: flex-start;
+}
+
+#sidebar .sidebar-toggle,
+#sidebar .sidebar-theme-toggle {
+	position: absolute;
+	right: 8px;
+	width: 26px;
+	height: 26px;
+	margin: 0;
+}
+
+#sidebar .sidebar-toggle {
+	top: 12px;
+}
+
+#sidebar .sidebar-theme-toggle {
+	top: 44px;
+}
+
+#sidebar .sidebar-toggle img {
+	width: 15px;
+	height: 15px;
+}
+
+#sidebar .sidebar-theme-toggle img {
+	width: 15px;
+	height: 15px;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle,
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-theme-toggle {
+	right: 6px;
+	width: 26px;
+	height: 26px;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-theme-toggle {
+	top: 44px;
+}
+
+@media (max-width: 767px) {
+	html[data-sidebar-collapsed="true"] #sidebar .sidebar-header {
+		height: 76px;
+		padding: 10px 12px 8px;
+	}
+}
+
+/* CoreMark sits between the account identity and the live metrics. */
+.vela-hero-coremark {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 2px;
+	margin-left: auto;
+	margin-right: 24px;
+	padding: 7px 11px;
+	border: 1px solid rgb(125 211 252 / 0.22);
+	border-radius: 10px;
+	background: rgb(8 47 73 / 0.34);
+	color: rgb(219 234 254 / 0.82);
+	font-size: 10.5px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+}
+
+.vela-hero-coremark strong {
+	color: #f8fbff;
+	font-size: 14px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+	.vela-hero-coremark {
+		margin-left: 0;
+		margin-right: 0;
+		order: 4;
+	}
+}
