@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><linearGradient id="vela-eth" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#38bdf8"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
+  <rect x="10" y="17" width="44" height="30" rx="7" fill="#0b2340" stroke="url(#vela-eth)" stroke-width="2.4"/>
+  <path d="M18 24h8v7h-8zm10 0h8v7h-8zm10 0h8v7h-8z" fill="#38bdf8" opacity=".9"/>
+  <path d="M22 37h20M22 42h20" stroke="#67e8f9" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+  <path d="M32 47v7m0 0-4-4m4 4 4-4" stroke="url(#vela-eth)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

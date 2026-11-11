@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><linearGradient id="vela-vlan" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#38bdf8"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
+  <rect x="11" y="14" width="42" height="13" rx="5" fill="#0b2340" stroke="url(#vela-vlan)" stroke-width="2.2"/>
+  <rect x="17" y="30" width="36" height="13" rx="5" fill="#0b2340" stroke="#22d3ee" stroke-width="1.8" opacity=".85"/>
+  <rect x="11" y="46" width="28" height="9" rx="4" fill="#0b2340" stroke="#60a5fa" stroke-width="1.8" opacity=".7"/>
+  <path d="M19 20h7m4 0h9M24 36h8m4 0h8" stroke="#a5f3fc" stroke-width="2" stroke-linecap="round"/>
+</svg>

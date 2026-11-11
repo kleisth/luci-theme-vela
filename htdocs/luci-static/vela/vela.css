@@ -2157,3 +2157,50 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 		justify-content: flex-start;
 	}
 }
+
+
+/* Network interface controls and Vela SVG type icons. */
+#cbi-network-interface .cbi-section-actions > div {
+	gap: 8px;
+}
+
+#cbi-network-interface .cbi-section-actions button {
+	min-width: 58px;
+	min-height: 34px;
+	padding: 6px 12px;
+	font-size: 12px;
+}
+
+#cbi-network-interface .ifacebox-body .cbi-tooltip {
+	display: none !important;
+}
+
+#cbi-network-interface .ifacebox-body img.vela-network-icon {
+	width: 30px;
+	height: 30px;
+	opacity: 1;
+	filter: none;
+}
+
+#cbi-network-interface .vela-device-in-stats .ifacebox-body small {
+	display: none;
+}
+
+@media (max-width: 650px) {
+	#cbi-network-interface .cbi-section-actions button {
+		min-width: 62px;
+		min-height: 36px;
+		padding: 7px 12px;
+	}
+}
+
+
+/* Keep one clean type icon per interface; additional physical devices are
+   already represented by the type/device fields in the stats grid. */
+#cbi-network-interface .ifacebox-body > span:not(:first-child) {
+	display: none;
+}
+
+#cbi-network-interface .ifacebox-body small {
+	display: none;
+}
