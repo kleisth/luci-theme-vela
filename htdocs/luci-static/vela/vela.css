@@ -2349,3 +2349,25 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 .vela-conn {
 	align-items: flex-end;
 }
+
+
+/* Give the last two columns breathing room instead of letting the
+   connection detail and the lease badge touch each other. */
+.vela-clients th.vela-col-conn,
+.vela-clients td.vela-col-conn {
+	padding-right: 36px;
+}
+
+.vela-clients th.vela-col-lease {
+	padding-left: 28px;
+	border-left: 1px solid rgb(148 163 184 / 0.32);
+}
+
+.vela-clients td.vela-col-lease {
+	padding-left: 28px;
+	border-left: 1px solid rgb(148 163 184 / 0.32);
+}
+
+.vela-clients th.vela-col-lease {
+	text-align: left;
+}
