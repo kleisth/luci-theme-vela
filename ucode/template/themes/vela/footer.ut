@@ -16,7 +16,7 @@
       L.require('menu-vela');
       if (window.navigation) L.require('router-vela');
     </script>
-    <script src="{{ media }}/network.js?v=1.1.3"></script>
+    <script src="{{ media }}/network.js?v=1.1.4"></script>
     {% endif %}
   </body>
 </html>

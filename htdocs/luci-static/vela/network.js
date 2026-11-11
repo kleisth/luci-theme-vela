@@ -57,10 +57,37 @@
 		return true;
 	}
 
-	function replaceIcon(img) {
+	function chooseIcon(name, device, kind, base) {
+		var n = String(name || '').toLowerCase();
+		var d = String(device || '').toLowerCase();
+		var k = String(kind || '').toLowerCase();
+		var all = n + ' ' + d + ' ' + k;
+
+		if (/vlan/.test(all))
+			return 'vlan.svg';
+		if (/bond|lag/.test(all))
+			return 'bond.svg';
+		if (/wifi|wlan|wireless|无线/.test(all))
+			return 'wifi.svg';
+		if (/pppoe|ppp|wan|拨号/.test(all))
+			return 'pppoe.svg';
+		if (/tunnel|vpn|wireguard|\bwg\b|tun\d|easy|tailscale|zerotier|隧道/.test(all))
+			return 'tunnel.svg';
+		if (/bridge|br-|网桥/.test(all) || base === 'bridge')
+			return 'bridge.svg';
+		if (/ethernet|eth\d|以太网|modem/.test(all) || base === 'ethernet')
+			return 'ethernet.svg';
+
+		/* Do not replace an icon we cannot classify; the stock icon is more
+		   accurate than a generic placeholder. */
+		return base ? iconMap[base] || null : null;
+	}
+
+	function replaceIcon(row, img, data) {
 		if (!img || img.getAttribute('data-vela-icon') === '1') return;
 		var base = String(img.getAttribute('src') || '').split('/').pop().replace(/\.svg.*$/, '').toLowerCase();
-		var file = iconMap[base] || 'unknown.svg';
+		var file = chooseIcon(row.getAttribute('data-sid'), data['设备'] || data.Device, data['类型'] || data.Type, base);
+		if (!file) return;
 		img.src = media + '/icons/network/' + file;
 		img.setAttribute('data-vela-icon', '1');
 		img.classList.add('vela-network-icon');
@@ -72,9 +99,6 @@
 		if (!root) return;
 
 		Array.prototype.forEach.call(root.querySelectorAll('tr.cbi-section-table-row'), function (row) {
-			if (row.getAttribute('data-vela-network') === '1') return;
-			row.setAttribute('data-vela-network', '1');
-
 			var stats = row.querySelector('td[data-name="_ifacestat"] [id$="-ifc-description"]');
 			var tips = row.querySelectorAll('.ifacebox-body .cbi-tooltip');
 			var tip = tips.length ? tips[0] : null;
@@ -88,7 +112,9 @@
 			addField(stats, '类型', data['类型'] || data.Type);
 
 			Array.prototype.forEach.call(tips, function (node) { node.remove(); });
-			Array.prototype.forEach.call(row.querySelectorAll('.ifacebox-body img'), replaceIcon);
+			Array.prototype.forEach.call(row.querySelectorAll('.ifacebox-body img'), function (img) {
+				replaceIcon(row, img, data);
+			});
 		});
 	}
 
