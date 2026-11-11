@@ -1860,3 +1860,97 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-theme-toggle {
 		order: 4;
 	}
 }
+
+
+/* Sidebar header: compact title block with the appearance switch to the
+   left of the collapse control. */
+#sidebar .sidebar-header {
+	height: 64px;
+	padding: 0 12px 8px;
+	align-items: center;
+}
+
+#sidebar .sidebar-header::after {
+	bottom: 12px;
+}
+
+#sidebar .sidebar-toggle {
+	top: 12px;
+	right: 8px;
+	width: 26px;
+	height: 26px;
+}
+
+#sidebar .sidebar-theme-toggle {
+	top: 12px;
+	right: 40px;
+	width: 26px;
+	height: 26px;
+}
+
+/* Keep the compact rail readable when the sidebar is collapsed. */
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-header {
+	height: 76px;
+	padding: 10px 6px 8px;
+	align-items: flex-start;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-theme-toggle {
+	top: 44px;
+	right: 6px;
+}
+
+html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
+	top: 12px;
+	right: 6px;
+}
+
+@media (max-width: 767px) {
+	html[data-sidebar-collapsed="true"] #sidebar .sidebar-header {
+		height: 76px;
+		padding: 10px 12px 8px;
+	}
+}
+
+/* A larger, roughly half-hero-height CoreMark readout. */
+.vela-hero-coremark {
+	display: inline-flex;
+	align-items: baseline;
+	justify-content: center;
+	gap: 4px;
+	min-height: 60px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 8px 18px;
+	border: 1px solid rgb(125 211 252 / 0.26);
+	border-radius: 12px;
+	background: linear-gradient(135deg, rgb(8 47 73 / 0.52), rgb(8 47 73 / 0.24));
+	color: rgb(219 234 254 / 0.82);
+	font-size: 11.5px;
+	font-weight: 600;
+	letter-spacing: 0.03em;
+	white-space: nowrap;
+}
+
+.vela-hero-coremark strong {
+	color: #f8fbff;
+	font-size: 31px;
+	line-height: 0.95;
+	font-weight: 750;
+	letter-spacing: -0.04em;
+	font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+	.vela-hero-coremark {
+		min-height: 50px;
+		margin-left: 0;
+		margin-right: 0;
+		padding: 7px 14px;
+		order: 4;
+	}
+
+	.vela-hero-coremark strong {
+		font-size: 25px;
+	}
+}
