@@ -2204,3 +2204,81 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 #cbi-network-interface .ifacebox-body small {
 	display: none;
 }
+
+
+/* Bandix integration in the client card. */
+.vela-bandix-note {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin: 0 0 12px;
+	padding: 10px 12px;
+	border: 1px dashed rgb(56 189 248 / 0.35);
+	border-radius: 11px;
+	background: rgb(56 189 248 / 0.06);
+}
+
+.vela-bandix-copy {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.vela-bandix-copy strong {
+	font-size: 12px;
+	font-weight: 650;
+}
+
+.vela-bandix-copy span {
+	color: var(--muted-foreground);
+	font-size: 11px;
+	line-height: 1.45;
+}
+
+.vela-bandix-note .vela-btn {
+	flex: 0 0 auto;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.vela-client-rate {
+	font-size: 11px;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.vela-conn {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	line-height: 1.25;
+}
+
+.vela-conn strong {
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+}
+
+.vela-conn-detail {
+	color: var(--muted-foreground);
+	font-size: 9px;
+	white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+	.vela-bandix-note {
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.vela-bandix-note .vela-btn {
+		margin-left: 0;
+	}
+}
+
+
+.vela-lease-badge--none::before {
+	background: #94a3b8;
+}

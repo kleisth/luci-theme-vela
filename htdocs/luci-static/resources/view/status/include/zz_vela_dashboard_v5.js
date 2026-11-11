@@ -3,6 +3,7 @@
 'require fs';
 'require network';
 'require rpc';
+'require uci';
 
 var callSystemBoard = rpc.declare({
 	object: 'system',
@@ -29,6 +30,28 @@ var callDHCPLeases = rpc.declare({
 	method: 'getDHCPLeases',
 	expect: { '': {} }
 });
+
+var callBandixVersion = rpc.declare({
+	object: 'luci.bandix',
+	method: 'getVersion',
+	expect: {}
+});
+
+var callBandixStatus = rpc.declare({
+	object: 'luci.bandix',
+	method: 'getStatus',
+	expect: {}
+});
+
+var callBandixConnections = rpc.declare({
+	object: 'luci.bandix',
+	method: 'getConnection',
+	expect: {}
+});
+
+function normMac(value) {
+	return String(value || '').toLowerCase();
+}
 
 function number(value) {
 	var n = Number(value);
@@ -224,6 +247,15 @@ return baseclass.extend({
 	_last: null,
 	_history: [],
 	_benchPromise: null,
+	_bandixProbe: null,
+
+	getBandixProbe: function() {
+		if (!this._bandixProbe)
+			this._bandixProbe = L.resolveDefault(callBandixVersion(), null).then(function(version) {
+				return { installed: !!version };
+			});
+		return this._bandixProbe;
+	},
 
 	getBench: function() {
 		if (!this._benchPromise)
@@ -243,7 +275,11 @@ return baseclass.extend({
 			L.resolveDefault(network.getWANNetworks(), []),
 			L.resolveDefault(fs.trimmed('/proc/sys/net/netfilter/nf_conntrack_count'), ''),
 			L.resolveDefault(fs.trimmed('/proc/sys/net/netfilter/nf_conntrack_max'), ''),
-			this.getBench()
+			this.getBench(),
+			this.getBandixProbe(),
+			L.resolveDefault(callBandixStatus(), null),
+			L.resolveDefault(callBandixConnections(), null),
+			L.resolveDefault(uci.load('bandix'), null)
 		]).then(L.bind(function(data) {
 			var board = L.isObject(data[0]) ? data[0] : {},
 			    system = L.isObject(data[1]) ? data[1] : {},
@@ -288,7 +324,13 @@ return baseclass.extend({
 				history: this._history.slice(),
 				conntrack: number(String(data[5] || '').trim()),
 				conntrackMax: number(String(data[6] || '').trim()),
-				coremark: coremark(data[7])
+				coremark: coremark(data[7]),
+				bandixInstalled: !!(data[8] && data[8].installed) ||
+					!!uci.get('bandix', 'general', 'iface'),
+				bandixTraffic: uci.get('bandix', 'traffic', 'enabled') === '1',
+				bandixConnections: uci.get('bandix', 'connections', 'enabled') === '1',
+				bandixStatus: data[9] || null,
+				bandixConnData: data[10] || null
 			};
 		}, this));
 	},
@@ -345,20 +387,118 @@ return baseclass.extend({
 			try { wanDev = wan.getL3Device(); } catch (e) { wanDev = null; }
 		}
 
-		var recentLeases = leases.slice().sort(ipSort).slice(0, 10);
-		var leaseRows = recentLeases.map(function(lease) {
-			var remaining = '永久';
-			if (lease.expires !== false) {
-				var left = number(lease.expires);
-				remaining = left > 0 ? duration(left) : '已过期';
-			}
-			return E('tr', {}, [
-				E('td', { 'class': 'vela-client-name' }, lease.hostname && lease.hostname !== '*' ? lease.hostname : '未知设备'),
-				E('td', {}, E('span', { 'class': 'vela-client-ip' }, lease.ipaddr || '-')),
-				E('td', {}, E('span', { 'class': 'vela-client-mac' }, lease.macaddr || '-')),
-				E('td', {}, E('span', { 'class': 'vela-lease-badge' }, remaining))
-			]);
+		var bandixByMac = {}, bandixByIp = {}, connByMac = {}, connByIp = {};
+		var bandixDevices = d.bandixStatus && Array.isArray(d.bandixStatus.d) ? d.bandixStatus.d : [];
+		var bandixConns = d.bandixConnData && d.bandixConnData.data && Array.isArray(d.bandixConnData.data.d)
+			? d.bandixConnData.data.d : [];
+
+		bandixDevices.forEach(function(dev) {
+			if (dev.mac) bandixByMac[normMac(dev.mac)] = dev;
+			if (dev.ip4) bandixByIp[dev.ip4] = dev;
 		});
+		bandixConns.forEach(function(dev) {
+			if (dev.mac) connByMac[normMac(dev.mac)] = dev;
+			if (dev.ip4) connByIp[dev.ip4] = dev;
+		});
+
+		function bandixStat(lease) {
+			return bandixByMac[normMac(lease.macaddr)] || bandixByIp[lease.ipaddr] || null;
+		}
+		function bandixConn(lease) {
+			return connByMac[normMac(lease.macaddr)] || connByIp[lease.ipaddr] || null;
+		}
+
+		var showRates = !!d.bandixInstalled && !!d.bandixTraffic;
+		var showConns = !!d.bandixInstalled && !!d.bandixConnections;
+
+		/* DHCP leases are the normal client list, but static-IP clients never
+		   appear there. Add recently active Bandix devices so their WAN
+		   rates and connections are visible too. */
+		var clientList = leases.slice();
+		if (d.bandixInstalled && bandixDevices.length) {
+			var nowMs = Date.now(), seenMac = {}, seenIp = {};
+			leases.forEach(function(lease) {
+				if (lease.macaddr) seenMac[normMac(lease.macaddr)] = true;
+				if (lease.ipaddr) seenIp[lease.ipaddr] = true;
+			});
+			bandixDevices.forEach(function(dev) {
+				var last = number(dev.last);
+				if (!dev.mac && !dev.ip4) return;
+				if (last && nowMs - last > 10 * 60 * 1000) return;
+				if ((dev.mac && seenMac[normMac(dev.mac)]) || (dev.ip4 && seenIp[dev.ip4])) return;
+				clientList.push({
+					hostname: String(dev.host || '').replace(/\.lan$/i, '') || '*',
+					ipaddr: dev.ip4 || '',
+					macaddr: dev.mac || '',
+					expires: null,
+					_bandixOnly: true
+				});
+			});
+		}
+		var recentLeases = clientList.sort(ipSort);
+		var clientCount = clientList.length;
+		var leaseRows = recentLeases.map(function(lease) {
+			var remaining = '—';
+			if (!lease._bandixOnly) {
+				remaining = '永久';
+				if (lease.expires !== false) {
+					var left = number(lease.expires);
+					remaining = left > 0 ? duration(left) : '已过期';
+				}
+			}			var stat = bandixStat(lease);
+			var conn = bandixConn(lease);
+			var row = [
+				E('td', { 'class': 'vela-client-name' }, lease.hostname && lease.hostname !== '*' ? lease.hostname : '未知设备'),
+				E('td', {}, E('span', { 'class': 'vela-client-ip' }, lease.ipaddr || '-'))
+			];
+			if (showRates) {
+				row.push(E('td', {}, E('span', { 'class': 'vela-client-rate' }, stat ? ('↓ ' + rate(number(stat.w_rx_r))) : '—')));
+				row.push(E('td', {}, E('span', { 'class': 'vela-client-rate' }, stat ? ('↑ ' + rate(number(stat.w_tx_r))) : '—')));
+			}
+			row.push(E('td', {}, E('span', { 'class': 'vela-client-mac' }, lease.macaddr || '-')));
+			if (showConns) {
+				row.push(E('td', {}, conn
+					? E('div', { 'class': 'vela-conn' }, [
+						E('strong', {}, String(number(conn.total))),
+						E('span', { 'class': 'vela-conn-detail' }, 'TCP ' + number(conn.tcp) + ' / UDP ' + number(conn.udp))
+					])
+					: '—'));
+			}
+			row.push(E('td', {}, E('span', { 'class': 'vela-lease-badge' + (lease._bandixOnly ? ' vela-lease-badge--none' : '') }, remaining)));
+			return E('tr', {}, row);
+		});
+
+		var bandixNotice = null;
+		if (!d.bandixInstalled) {
+			bandixNotice = E('div', { 'class': 'vela-bandix-note' }, [
+				E('div', { 'class': 'vela-bandix-copy' }, [
+					E('strong', {}, '未检测到 Bandix'),
+					E('span', {}, '安装 Bandix 后，这里可直接显示每台客户机的 WAN 实时速率和 TCP/UDP 连接数。')
+				]),
+				E('a', {
+					'class': 'vela-btn',
+					href: 'https://github.com/timsaya/openwrt-bandix',
+					target: '_blank',
+					rel: 'noreferrer'
+				}, '查看项目')
+			]);
+		}
+		else if (!d.bandixTraffic || !d.bandixConnections || !d.bandixStatus || !d.bandixConnData) {
+			var missing = [];
+			if (!d.bandixTraffic) missing.push('流量监控');
+			if (!d.bandixConnections) missing.push('连接监控');
+			if (!d.bandixStatus || !d.bandixConnData) missing.push('统计数据');
+			bandixNotice = E('div', { 'class': 'vela-bandix-note' }, [
+				E('div', { 'class': 'vela-bandix-copy' }, [
+					E('strong', {}, 'Bandix 已安装，但' + missing.join('、') + '未启用'),
+					E('span', {}, '开启后即可在此显示 WAN 速率与 TCP/UDP 连接数。')
+				]),
+				E('a', {
+					'class': 'vela-btn',
+					href: L.url('admin/network/bandix/settings')
+				}, '打开 Bandix 设置')
+			]);
+		}
 
 		var systemRows = [
 			[ '主机名', hostname ],
@@ -385,7 +525,7 @@ return baseclass.extend({
 		var heroMetrics = [
 			[ '运行时间', duration(uptime) ],
 			[ '平均负载', loadavg(system.load) ],
-			[ '在线客户机', String(leases.length) ],
+			[ '在线客户机', String(clientCount) ],
 			[ '活动连接', d.conntrack > 0 ? String(d.conntrack) : '-' ],
 			[ '实时下行', rate(d.rxRate) ]
 		].map(function(m) {
@@ -476,7 +616,7 @@ return baseclass.extend({
 				]),
 				E('div', { 'class': 'vela-stat-pair' }, [
 					E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '连接上限'), E('strong', {}, connMax ? connMax.toLocaleString() : '-') ]),
-					E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, 'DHCP 客户机'), E('strong', {}, String(leases.length)) ])
+					E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '客户机'), E('strong', {}, String(clientCount)) ])
 				]),
 				meter('conntrack 使用率', connValue, connMax || Math.max(connValue, 1),
 					connMax ? percent(connValue, connMax).toFixed(1) + ' %' : '-'),
@@ -486,19 +626,27 @@ return baseclass.extend({
 				])
 			]), '实时'),
 
-			card('客户机', '来自 dnsmasq 的活动 DHCP 租约（最多显示 10 台）', 'vela-span-12',
-				recentLeases.length ? E('div', { 'class': 'vela-clients-wrap' }, [
-					E('table', { 'class': 'vela-clients' }, [
-						E('thead', {}, E('tr', {}, [
-							E('th', {}, '主机名'),
-							E('th', {}, 'IPv4'),
-							E('th', {}, 'MAC'),
-							E('th', {}, '租约剩余')
-						])),
-						E('tbody', {}, leaseRows)
-					])
-				]) : E('div', { 'class': 'vela-empty' }, '当前没有活动 DHCP 租约'),
-				String(leases.length) + ' 台')
+			card('客户机', 'DHCP 租约 + Bandix 活跃客户机' + (showRates || showConns ? ' · WAN 速率与连接数' : ''), 'vela-span-12',
+				E('div', {}, [
+					bandixNotice,
+					recentLeases.length ? E('div', { 'class': 'vela-clients-wrap' }, [
+						E('table', { 'class': 'vela-clients' }, [
+							E('thead', {}, E('tr', {}, (function() {
+								var headers = [ E('th', {}, '主机名'), E('th', {}, 'IPv4') ];
+								if (showRates) {
+									headers.push(E('th', {}, 'WAN 下行'));
+									headers.push(E('th', {}, 'WAN 上行'));
+								}
+								headers.push(E('th', {}, 'MAC'));
+								if (showConns) headers.push(E('th', {}, '连接数'));
+								headers.push(E('th', {}, '租约剩余'));
+								return headers;
+							})())),
+							E('tbody', {}, leaseRows)
+						])
+					]) : E('div', { 'class': 'vela-empty' }, '当前没有活动 DHCP 租约')
+				]),
+				String(clientCount) + ' 台')
 		]);
 
 		window.setTimeout(L.bind(function() { self._activate(rootEl); }, this), 0);
