@@ -49,6 +49,24 @@ var callBandixConnections = rpc.declare({
 	expect: {}
 });
 
+var callVelaStatus = rpc.declare({
+	object: 'vela',
+	method: 'status',
+	expect: {}
+});
+
+var callVelaConnect = rpc.declare({
+	object: 'vela',
+	method: 'connect',
+	expect: {}
+});
+
+var callVelaDisconnect = rpc.declare({
+	object: 'vela',
+	method: 'disconnect',
+	expect: {}
+});
+
 function normMac(value) {
 	return String(value || '').toLowerCase();
 }
@@ -69,6 +87,30 @@ function bytes(value) {
 
 function rate(value) {
 	return bytes(value) + '/s';
+}
+
+function velaPhaseText(st) {
+	if (!st) return '未知';
+	if (st.protected) return '已保护';
+	if (st.phase === 'connected') return '已连接';
+	if (st.phase === 'connecting' || st.phase === 'reconnecting') return '连接中';
+	if (st.phase === 'degraded') return '已连接 · 打洞未完成';
+	if (st.phase === 'error') return '连接失败';
+	if (st.phase === 'auth_required') return '未登录';
+	return '未连接';
+}
+
+function velaStateClass(st) {
+	if (!st) return 'off';
+	if (st.protected || st.phase === 'connected') return 'ok';
+	if (st.phase === 'degraded') return 'warn';
+	if (st.phase === 'error') return 'bad';
+	return 'off';
+}
+
+function velaExitText(st) {
+	if (!st || !st.exit) return '—';
+	return (st.exit.country || st.exit.code || '未知') + ' · ' + (st.exit.ip || '—');
 }
 
 function duration(seconds) {
@@ -248,6 +290,7 @@ return baseclass.extend({
 	_history: [],
 	_benchPromise: null,
 	_bandixProbe: null,
+	_clientSort: { key: null, dir: -1 },
 
 	getBandixProbe: function() {
 		if (!this._bandixProbe)
@@ -255,6 +298,45 @@ return baseclass.extend({
 				return { installed: !!version };
 			});
 		return this._bandixProbe;
+	},
+
+	setClientSort: function(root, key) {
+		var sort = this._clientSort || { key: null, dir: -1 };
+		sort.dir = sort.key === key ? -sort.dir : -1;
+		sort.key = key;
+		this._clientSort = sort;
+		this.applyClientSort(root);
+	},
+
+	applyClientSort: function(root) {
+		var table = root && root.querySelector('.vela-clients'),
+		    tbody = table && table.tBodies && table.tBodies[0],
+		    key = this._clientSort && this._clientSort.key,
+		    dir = this._clientSort && this._clientSort.dir;
+		if (!tbody || !key)
+			return;
+
+		var rows = Array.prototype.slice.call(tbody.rows);
+		rows.forEach(function(row, index) { row.__velaIndex = index; });
+		rows.sort(function(a, b) {
+			var av = a.getAttribute('data-sort-' + key),
+			    bv = b.getAttribute('data-sort-' + key),
+			    am = av == null || av === '',
+			    bm = bv == null || bv === '';
+			if (am && bm) return a.__velaIndex - b.__velaIndex;
+			if (am) return 1;
+			if (bm) return -1;
+			var diff = (number(av) - number(bv)) * dir;
+			return diff || (a.__velaIndex - b.__velaIndex);
+		});
+		rows.forEach(function(row) { tbody.appendChild(row); });
+
+		Array.prototype.forEach.call(table.querySelectorAll('th[data-sort]'), function(th) {
+			var active = th.getAttribute('data-sort') === key;
+			th.classList.toggle('vela-sort-active', active);
+			if (active) th.setAttribute('data-dir', String(dir));
+			else th.removeAttribute('data-dir');
+		});
 	},
 
 	getBench: function() {
@@ -279,7 +361,8 @@ return baseclass.extend({
 			this.getBandixProbe(),
 			L.resolveDefault(callBandixStatus(), null),
 			L.resolveDefault(callBandixConnections(), null),
-			L.resolveDefault(uci.load('bandix'), null)
+			L.resolveDefault(uci.load('bandix'), null),
+			L.resolveDefault(callVelaStatus(), null)
 		]).then(L.bind(function(data) {
 			var board = L.isObject(data[0]) ? data[0] : {},
 			    system = L.isObject(data[1]) ? data[1] : {},
@@ -330,9 +413,88 @@ return baseclass.extend({
 				bandixTraffic: uci.get('bandix', 'traffic', 'enabled') === '1',
 				bandixConnections: uci.get('bandix', 'connections', 'enabled') === '1',
 				bandixStatus: data[9] || null,
-				bandixConnData: data[10] || null
+				bandixConnData: data[10] || null,
+				vela: L.isObject(data[12]) ? data[12] : null
 			};
 		}, this));
+	},
+
+	renderVelaBody: function(body, st) {
+		var self = this,
+		    stats = st.stats || {},
+		    connected = st.phase === 'connected' || st.phase === 'degraded',
+		    connecting = st.phase === 'connecting' || st.phase === 'reconnecting';
+
+		body.innerHTML = '';
+		body.appendChild(E('div', { 'class': 'vela-vela-head' }, [
+			E('span', { 'class': 'vela-vela-state ' + velaStateClass(st) }, velaPhaseText(st))
+		]));
+		body.appendChild(E('div', { 'class': 'vela-stat-pair' }, [
+			E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '实时下行'), E('strong', {}, rate(stats.down_rate || 0)) ]),
+			E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '实时上行'), E('strong', {}, rate(stats.up_rate || 0)) ]),
+			E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '活动连接'), E('strong', {}, String(number(stats.connections))) ]),
+			E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '运行时长'), E('strong', {}, stats.running ? duration(stats.uptime) : '—') ])
+		]));
+		body.appendChild(E('div', { 'class': 'vela-vela-meta' }, [
+			E('div', {}, [ E('span', {}, '出口'), E('strong', {}, velaExitText(st)) ]),
+			E('div', {}, [ E('span', {}, '账号'), E('strong', {}, st.account && st.account.username ? st.account.username : '—') ])
+		]));
+		body.__velaStatus = st;
+		body.appendChild(E('div', { 'class': 'vela-vela-actions' }, [
+			E('button', {
+				'class': 'cbi-button cbi-button-apply',
+				disabled: connected || connecting ? 'disabled' : null,
+				click: function() { self.velaAction(body, 'connect'); }
+			}, connecting ? '正在连接…' : '连接'),
+			E('button', {
+				'class': 'cbi-button cbi-button-reset',
+				disabled: !connected || connecting ? 'disabled' : null,
+				click: function() { self.velaAction(body, 'disconnect'); }
+			}, '断开'),
+			E('button', {
+				'class': 'cbi-button cbi-button-neutral',
+				disabled: connecting ? 'disabled' : null,
+				click: function() { self.velaAction(body, 'reconnect'); }
+			}, '重新连接')
+		]));
+		if (st.error)
+			body.appendChild(E('div', { 'class': 'vela-vela-error' }, st.error));
+
+		var cardNode = body.closest('.vela-card');
+		var kicker = cardNode && cardNode.querySelector('.vela-kicker');
+		if (kicker) kicker.textContent = velaPhaseText(st);
+	},
+
+	velaAction: function(body, action) {
+		var self = this;
+		Array.prototype.forEach.call(body.querySelectorAll('button'), function(btn) { btn.disabled = true; });
+
+		var request;
+		if (action === 'disconnect')
+			request = callVelaDisconnect();
+		else if (action === 'reconnect') {
+			var current = body.__velaStatus,
+			    wasConnected = current && (current.phase === 'connected' || current.phase === 'degraded');
+			request = wasConnected
+				? callVelaDisconnect()
+					.then(function() { return new Promise(function(resolve) { window.setTimeout(resolve, 900); }); })
+					.then(function() { return callVelaConnect(); })
+				: callVelaConnect();
+		}
+		else
+			request = callVelaConnect();
+
+		request.then(function() {
+			return new Promise(function(resolve) { window.setTimeout(resolve, 700); });
+		}).then(function() {
+			return callVelaStatus();
+		}).then(function(status) {
+			if (!status) throw new Error('无法读取 Vela 状态');
+			self.renderVelaBody(body, status);
+		}).catch(function(err) {
+			Array.prototype.forEach.call(body.querySelectorAll('button'), function(btn) { btn.disabled = false; });
+			body.appendChild(E('div', { 'class': 'vela-vela-error' }, err && err.message ? err.message : '操作失败'));
+		});
 	},
 
 	_activate: function(root) {
@@ -447,6 +609,8 @@ return baseclass.extend({
 				}
 			}			var stat = bandixStat(lease);
 			var conn = bandixConn(lease);
+			var leaseSort = lease._bandixOnly ? null :
+				(lease.expires === false ? 2147483647 : number(lease.expires));
 			var row = [
 				E('td', { 'class': 'vela-client-name vela-col-host' }, [
 					E('div', { 'class': 'vela-client-host' }, lease.hostname && lease.hostname !== '*' ? lease.hostname : '未知设备'),
@@ -467,7 +631,13 @@ return baseclass.extend({
 					: '—'));
 			}
 			row.push(E('td', { 'class': 'vela-col-lease' }, E('span', { 'class': 'vela-lease-badge' + (lease._bandixOnly ? ' vela-lease-badge--none' : '') }, remaining)));
-			return E('tr', {}, row);
+			return E('tr', {
+				'data-sort-down': stat ? String(number(stat.w_rx_r)) : '',
+				'data-sort-up': stat ? String(number(stat.w_tx_r)) : '',
+				'data-sort-conn': conn ? String(number(conn.total)) : '',
+				'data-sort-lease': leaseSort == null ? '' : String(leaseSort),
+				'data-sort-ip': lease.ipaddr || ''
+			}, row);
 		});
 
 		var bandixNotice = null;
@@ -542,6 +712,32 @@ return baseclass.extend({
 
 		var connValue = d.conntrack > 0 ? d.conntrack : 0;
 		var connMax = d.conntrackMax > 0 ? d.conntrackMax : 0;
+		var connectionCard;
+
+		if (d.vela) {
+			var velaBody = E('div', { 'class': 'vela-vela-conn' });
+			this.renderVelaBody(velaBody, d.vela);
+			connectionCard = card('连接概览', 'Vela 插件连接状态与控制', 'vela-span-5',
+				velaBody, velaPhaseText(d.vela));
+		}
+		else {
+			connectionCard = card('连接概览', 'conntrack 与客户端', 'vela-span-5', E('div', {}, [
+				E('div', { 'class': 'vela-big-stat' }, [
+					E('strong', {}, connValue.toLocaleString()),
+					E('span', {}, '活动连接')
+				]),
+				E('div', { 'class': 'vela-stat-pair' }, [
+					E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '连接上限'), E('strong', {}, connMax ? connMax.toLocaleString() : '-') ]),
+					E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '客户机'), E('strong', {}, String(clientCount)) ])
+				]),
+				meter('conntrack 使用率', connValue, connMax || Math.max(connValue, 1),
+					connMax ? percent(connValue, connMax).toFixed(1) + ' %' : '-'),
+				E('div', { 'class': 'vela-total-grid' }, [
+					E('div', {}, [ E('span', {}, 'WAN 连接时间'), E('strong', {}, wan && wan.getUptime() > 0 ? duration(wan.getUptime()) : '-') ]),
+					E('div', {}, [ E('span', {}, '采样间隔'), E('strong', {}, '5 秒') ])
+				])
+			]), '实时');
+		}
 
 		var rootEl = E('div', { 'class': 'vela-dash' }, [
 			E('section', { 'class': 'vela-dash-hero' }, [
@@ -611,22 +807,7 @@ return baseclass.extend({
 				]),
 			]), wan ? '实时' : '无数据'),
 
-			card('连接概览', 'conntrack 与客户端', 'vela-span-5', E('div', {}, [
-				E('div', { 'class': 'vela-big-stat' }, [
-					E('strong', {}, connValue.toLocaleString()),
-					E('span', {}, '活动连接')
-				]),
-				E('div', { 'class': 'vela-stat-pair' }, [
-					E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '连接上限'), E('strong', {}, connMax ? connMax.toLocaleString() : '-') ]),
-					E('div', { 'class': 'vela-stat-box' }, [ E('span', {}, '客户机'), E('strong', {}, String(clientCount)) ])
-				]),
-				meter('conntrack 使用率', connValue, connMax || Math.max(connValue, 1),
-					connMax ? percent(connValue, connMax).toFixed(1) + ' %' : '-'),
-				E('div', { 'class': 'vela-total-grid' }, [
-					E('div', {}, [ E('span', {}, 'WAN 连接时间'), E('strong', {}, wan && wan.getUptime() > 0 ? duration(wan.getUptime()) : '-') ]),
-					E('div', {}, [ E('span', {}, '采样间隔'), E('strong', {}, '5 秒') ])
-				])
-			]), '实时'),
+			connectionCard,
 
 			card('客户机', 'DHCP 租约 + Bandix 活跃客户机' + (showRates || showConns ? ' · WAN 速率与连接数' : ''), 'vela-span-12',
 				E('div', {}, [
@@ -636,11 +817,11 @@ return baseclass.extend({
 							E('thead', {}, E('tr', {}, (function() {
 								var headers = [ E('th', { 'class': 'vela-col-host' }, '主机名'), E('th', { 'class': 'vela-col-ip' }, 'IPv4') ];
 								if (showRates) {
-									headers.push(E('th', { 'class': 'vela-col-rate' }, 'WAN 下行'));
-									headers.push(E('th', { 'class': 'vela-col-rate' }, 'WAN 上行'));
+									headers.push(E('th', { 'class': 'vela-col-rate', 'data-sort': 'down', title: '点击切换最大/最小排序' }, 'WAN 下行'));
+									headers.push(E('th', { 'class': 'vela-col-rate', 'data-sort': 'up', title: '点击切换最大/最小排序' }, 'WAN 上行'));
 								}
-								if (showConns) headers.push(E('th', { 'class': 'vela-col-conn' }, '连接数'));
-								headers.push(E('th', { 'class': 'vela-col-lease' }, '租约剩余'));
+								if (showConns) headers.push(E('th', { 'class': 'vela-col-conn', 'data-sort': 'conn', title: '点击切换最大/最小排序' }, '连接数'));
+								headers.push(E('th', { 'class': 'vela-col-lease', 'data-sort': 'lease', title: '点击切换最大/最小排序' }, '租约剩余'));
 								return headers;
 							})())),
 							E('tbody', {}, leaseRows)
@@ -649,6 +830,24 @@ return baseclass.extend({
 				]),
 				String(clientCount) + ' 台')
 		]);
+
+		var clientTable = rootEl.querySelector('.vela-clients');
+		if (clientTable) {
+			Array.prototype.forEach.call(clientTable.querySelectorAll('th[data-sort]'), function(th) {
+				th.setAttribute('tabindex', '0');
+				th.addEventListener('click', function() {
+					self.setClientSort(rootEl, th.getAttribute('data-sort'));
+				});
+				th.addEventListener('keydown', function(ev) {
+					if (ev.key === 'Enter' || ev.key === ' ') {
+						ev.preventDefault();
+						self.setClientSort(rootEl, th.getAttribute('data-sort'));
+					}
+				});
+			});
+			if (self._clientSort && self._clientSort.key)
+				self.applyClientSort(rootEl);
+		}
 
 		window.setTimeout(L.bind(function() { self._activate(rootEl); }, this), 0);
 		return rootEl;

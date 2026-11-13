@@ -2407,3 +2407,139 @@ html[data-sidebar-collapsed="true"] #sidebar .sidebar-toggle {
 .vela-conn {
 	align-items: flex-start;
 }
+
+
+/* Sortable client-table headers. */
+.vela-clients th[data-sort] {
+	position: relative;
+	padding-right: 18px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.vela-clients th[data-sort]::after {
+	content: '↕';
+	position: absolute;
+	right: 3px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 9px;
+	opacity: 0.35;
+}
+
+.vela-clients th[data-sort]:hover,
+.vela-clients th.vela-sort-active {
+	color: #0369a1;
+}
+
+.vela-clients th[data-sort][data-dir="-1"]::after {
+	content: '↓';
+	opacity: 1;
+}
+
+.vela-clients th[data-sort][data-dir="1"]::after {
+	content: '↑';
+	opacity: 1;
+}
+
+/* Vela account-gateway card in the connection overview slot. */
+.vela-vela-conn {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.vela-vela-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.vela-vela-state {
+	display: inline-flex;
+	align-items: center;
+	padding: 3px 9px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 650;
+	white-space: nowrap;
+}
+
+.vela-vela-state.ok {
+	color: #15803d;
+	background: rgb(34 197 94 / 0.12);
+}
+
+.vela-vela-state.warn {
+	color: #a16207;
+	background: rgb(234 179 8 / 0.16);
+}
+
+.vela-vela-state.bad {
+	color: #b91c1c;
+	background: rgb(239 68 68 / 0.12);
+}
+
+.vela-vela-state.off {
+	color: var(--muted-foreground);
+	background: rgb(148 163 184 / 0.14);
+}
+
+.vela-vela-exit {
+	color: var(--muted-foreground);
+	font-size: 11px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.vela-vela-meta {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px 12px;
+	padding-top: 9px;
+	border-top: 1px solid var(--border);
+}
+
+.vela-vela-meta > div {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.vela-vela-meta span {
+	color: var(--muted-foreground);
+	font-size: 10px;
+}
+
+.vela-vela-meta strong {
+	font-size: 11.5px;
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.vela-vela-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.vela-vela-actions .cbi-button {
+	min-height: 30px;
+	padding: 4px 11px;
+	font-size: 11px;
+}
+
+.vela-vela-error {
+	padding: 7px 9px;
+	border-radius: 8px;
+	color: #b91c1c;
+	background: rgb(239 68 68 / 0.08);
+	font-size: 10.5px;
+	line-height: 1.45;
+}
